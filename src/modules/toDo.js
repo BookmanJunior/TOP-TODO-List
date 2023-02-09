@@ -1,10 +1,13 @@
+import generateId from "./idGenerator";
+
 export default function toDo(
   title,
   description,
   dueDate,
   priority,
   notes,
-  status = "unchecked"
+  status = "unchecked",
+  id = generateId()
 ) {
   const changeTitle = (value) => {
     title = value;
@@ -56,6 +59,9 @@ export default function toDo(
     },
     get status() {
       return status;
+    },
+    get id() {
+      return id;
     },
   };
 }
