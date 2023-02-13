@@ -1,17 +1,20 @@
-import generateId from "./idGenerator";
+export default class Projects {
+  static #projectsList = [];
 
-const projects = [];
+  static addProject(project) {
+    this.#projectsList.push(project);
+  }
 
-const project = (name, id = generateId()) => ({
-  set name(value) {
-    name = value;
-  },
-  get name() {
-    return name;
-  },
-  get id() {
-    return id;
-  },
-});
+  static removeProject(project) {
+    const projectIndex = this.#getProjectsIndex(project);
+    this.#projectsList.splice(projectIndex, 1);
+  }
 
-export { projects, project };
+  static #getProjectsIndex(project) {
+    return this.#projectsList.findIndex((element) => element.title === project);
+  }
+
+  static get list() {
+    return this.#projectsList;
+  }
+}
