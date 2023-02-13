@@ -1,6 +1,6 @@
 import generateId from "./idGenerator";
 
-export default function toDo(
+export default function ToDo(
   title,
   description,
   dueDate,
