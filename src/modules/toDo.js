@@ -2,7 +2,6 @@ import generateId from "./idGenerator";
 
 export default function ToDo(
   title,
-  description,
   dueDate,
   priority,
   notes,
@@ -11,10 +10,6 @@ export default function ToDo(
 ) {
   const changeTitle = (value) => {
     title = value;
-  };
-
-  const changeDescription = (value) => {
-    description = value;
   };
 
   const changeDueDate = (value) => {
@@ -37,16 +32,12 @@ export default function ToDo(
 
   return {
     changeTitle,
-    changeDescription,
     changeDueDate,
     changePriority,
     changeNotes,
     changeStatus,
     get title() {
       return title;
-    },
-    get description() {
-      return description;
     },
     get dueDate() {
       return dueDate;
