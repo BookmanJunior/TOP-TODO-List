@@ -4,7 +4,6 @@ export default function ToDo(
   title,
   dueDate,
   priority,
-  notes,
   status = "unchecked",
   id = generateId()
 ) {
@@ -20,10 +19,6 @@ export default function ToDo(
     priority = value;
   };
 
-  const changeNotes = (value) => {
-    notes = value;
-  };
-
   const changeStatus = (value) => {
     if (value === "checked" || value === "unchecked") {
       status = value;
@@ -34,7 +29,6 @@ export default function ToDo(
     changeTitle,
     changeDueDate,
     changePriority,
-    changeNotes,
     changeStatus,
     get title() {
       return title;
@@ -44,9 +38,6 @@ export default function ToDo(
     },
     get priority() {
       return priority;
-    },
-    get notes() {
-      return notes;
     },
     get status() {
       return status;
