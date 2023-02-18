@@ -8,5 +8,52 @@
     <link rel="stylesheet" href="style.css" />
     <script src="main.js" defer></script>
   </head>
-  <body></body>
+  <body>
+    <div class="container">
+      <nav class="main-nav" id="mainNav">
+        <ul class="default-projects">
+          <li class="default-project project active">
+            <span>Inbox</span>
+            <span class="task-counter">1</span>
+          </li>
+          <li class="default-project project">
+            <span>Scheduled Tasks</span>
+            <span class="task-counter"></span>
+          </li>
+        </ul>
+        <ul class="projects" id="projects"></ul>
+        <button class="add-project-btn" id="addProjectBtn">
+          + Add Project
+        </button>
+      </nav>
+      <div class="tasks-container" id="tasksContainer">
+        <form class="task-form">
+          <div class="left-wrapper">
+            <div class="priority-btns">
+              <input type="radio" name="priority" value="high" required />
+              <input type="radio" name="priority" value="medium" />
+              <input type="radio" name="priority" value="low" />
+            </div>
+            <input
+              type="text"
+              name="task-title"
+              id="taskTitle"
+              placeholder="What is your next task?"
+              required
+            />
+          </div>
+          <div class="right-wrapper">
+            <input type="date" name="dueDate" id="dueDate" required />
+            <input
+              type="submit"
+              title="Add Task"
+              class="addTask-btn"
+              value="+"
+            />
+          </div>
+        </form>
+        <div class="tasks"></div>
+      </div>
+    </div>
+  </body>
 </html>
