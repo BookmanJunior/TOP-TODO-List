@@ -15,7 +15,9 @@ export default function toDoComponent(title, dueDate, priority, id) {
 function leftSideWrapper(title, priority) {
   const wrapper = document.createElement("div");
 
-  wrapper.append(taskTitleComponent(title), priorityComponent(priority));
+  wrapper.classList.add("left-wrapper");
+
+  wrapper.append(priorityComponent(priority), taskTitleComponent(title));
 
   return wrapper;
 }
