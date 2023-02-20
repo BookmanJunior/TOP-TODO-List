@@ -10,6 +10,8 @@ export default function projectComponent(projectTitle) {
   title.classList.add("task-title");
   taskCounter.classList.add("task-counter");
   btnContainer.classList.add("btn-container");
+  deleteBtn.classList.add("delete-btn");
+  editBtn.classList.add("edit-btn");
 
   title.textContent = projectTitle;
   deleteBtn.textContent = "Delete";
