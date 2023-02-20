@@ -2,6 +2,9 @@ import Project from "./project";
 import ToDo from "./toDo";
 
 const inbox = Project("Inbox");
+const scheduledTasks = Project("Scheduled Tasks");
+
+// For testing
 const work = Project("Work");
 const school = Project("School");
 
@@ -16,9 +19,10 @@ const test3 = ToDo("test3", new Date("2023-04-12").toLocaleDateString(), "low");
 inbox.addTask(test1);
 work.addTask(test2);
 school.addTask(test3);
+//
 
 export default class Projects {
-  static #projectsList = [inbox, work, school];
+  static #projectsList = [inbox, scheduledTasks, work, school];
 
   static addProject(project) {
     this.#projectsList.push(project);
