@@ -2,8 +2,13 @@ import Projects from "./projects";
 import ToDo from "./toDo";
 import toDoComponent from "./toDoComponent";
 import toDoFormComponent from "./toDoFormComponent";
+import projectComponent from "./projectComponent";
 
 const screenController = () => {
+  const defaultProjectsContainer = [
+    ...document.querySelectorAll(".default-project-title"),
+  ];
+  const projectsContainer = document.getElementById("projects");
   const tasksContainer = document.querySelector(".tasks");
   const taskForm = document.querySelector(".task-form");
 
@@ -49,6 +54,19 @@ const screenController = () => {
     taskForm.reset();
   };
 
+  const getDefaultProjectsTitles = () =>
+    defaultProjectsContainer.map((project) => project.textContent);
+
+  const renderCustomProjects = () => {
+    const allProjects = Projects.list;
+    allProjects.forEach((project) => {
+      // Skip default projects
+      if (!getDefaultProjectsTitles().includes(project.title)) {
+        projectsContainer.appendChild(projectComponent(project.title));
+      }
+    });
+  };
+
   taskForm.addEventListener("submit", generateNewTask);
   tasksContainer.addEventListener("click", (e) => {
     if (e.target.matches(".edit-btn")) {
@@ -64,6 +82,7 @@ const screenController = () => {
   });
 
   window.addEventListener("load", renderAllTasks);
+  window.addEventListener("load", renderCustomProjects);
 };
 
 export default screenController;
