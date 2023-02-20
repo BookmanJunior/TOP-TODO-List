@@ -29,7 +29,9 @@ const screenController = () => {
   const renderAllTasks = () => {
     const allTasks = Projects.getAllTasks();
     allTasks.forEach((taskArray) => {
-      generateTaskContainer(taskArray[0]);
+      if (taskArray[0]) {
+        generateTaskContainer(taskArray[0]);
+      }
     });
   };
 
