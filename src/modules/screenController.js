@@ -5,10 +5,12 @@ import toDoFormComponent from "./toDoFormComponent";
 import projectComponent from "./projectComponent";
 
 const screenController = () => {
+  const mainNav = document.getElementById("mainNav");
   const defaultProjectsContainer = [
     ...document.querySelectorAll(".default-project-title"),
   ];
   const projectsContainer = document.getElementById("projects");
+  const inboxContainer = document.querySelector(".inbox span");
   const tasksContainer = document.querySelector(".tasks");
   const taskForm = document.querySelector(".task-form");
 
@@ -26,9 +28,17 @@ const screenController = () => {
     generateTaskContainer(task);
   };
 
+  const renderProjectsTasks = (project) => {
+    const currProjectTasks = Projects.getProject(project).tasks;
+    currProjectTasks.forEach((task) => {
+      generateTaskContainer(task);
+    });
+  };
+
   const renderAllTasks = () => {
     const allTasks = Projects.getAllTasks();
     allTasks.forEach((taskArray) => {
+      // skip empty tasks
       if (taskArray[0]) {
         generateTaskContainer(taskArray[0]);
       }
@@ -62,13 +72,24 @@ const screenController = () => {
   const renderCustomProjects = () => {
     const allProjects = Projects.list;
     allProjects.forEach((project) => {
-      // Skip default projects
+      // skip default projects
       if (!getDefaultProjectsTitles().includes(project.title)) {
         projectsContainer.appendChild(projectComponent(project.title));
       }
     });
   };
 
+  mainNav.addEventListener("click", (e) => {
+    if (e.target.matches(".task-title")) {
+      const currProject = e.target.textContent;
+      tasksContainer.textContent = "";
+      renderProjectsTasks(currProject);
+    }
+  });
+  inboxContainer.addEventListener("click", () => {
+    tasksContainer.textContent = "";
+    renderAllTasks();
+  });
   taskForm.addEventListener("submit", generateNewTask);
   tasksContainer.addEventListener("click", (e) => {
     if (e.target.matches(".edit-btn")) {
@@ -76,13 +97,11 @@ const screenController = () => {
       taskElement.replaceWith(toDoFormComponent("edit-form"));
     }
   });
-
   tasksContainer.addEventListener("click", (e) => {
     if (e.target.matches(".delete-btn")) {
       removeTask(e);
     }
   });
-
   window.addEventListener("load", renderAllTasks);
   window.addEventListener("load", renderCustomProjects);
 };
