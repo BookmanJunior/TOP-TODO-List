@@ -79,11 +79,23 @@ const screenController = () => {
     });
   };
 
+  const removeProject = (e) => {
+    const parentContainer = e.target.closest(".project");
+    const projectsTitle = parentContainer.firstChild.textContent;
+    Projects.removeProject(projectsTitle);
+    parentContainer.remove();
+  };
+
   mainNav.addEventListener("click", (e) => {
     if (e.target.matches(".task-title")) {
       const currProject = e.target.textContent;
       tasksContainer.textContent = "";
       renderProjectsTasks(currProject);
+    }
+  });
+  mainNav.addEventListener("click", (e) => {
+    if (e.target.matches(".delete-btn")) {
+      removeProject(e);
     }
   });
   inboxContainer.addEventListener("click", () => {
