@@ -13,6 +13,7 @@ const screenController = () => {
   const inboxContainer = document.querySelector(".inbox span");
   const tasksContainer = document.querySelector(".tasks");
   const taskForm = document.querySelector(".task-form");
+  let currentProject = Projects.getProject("Inbox");
 
   const generateTaskContainer = (task) => {
     const taskContainer = toDoComponent(
@@ -48,9 +49,9 @@ const screenController = () => {
   const removeTask = (e) => {
     const parentContainer = e.target.closest(".task");
     const tasksId = parentContainer.getAttribute("data-id");
-    const currentProject = Projects.getTasksProject(tasksId);
+    const selectedProject = Projects.getTasksProject(tasksId);
     parentContainer.remove();
-    currentProject.removeTask(tasksId);
+    selectedProject.removeTask(tasksId);
     console.log(Projects.list[0].tasks);
   };
 
@@ -63,6 +64,7 @@ const screenController = () => {
       taskForm.priority.value
     );
     renderTask(newTask);
+    currentProject.addTask(newTask);
     taskForm.reset();
   };
 
@@ -88,9 +90,11 @@ const screenController = () => {
 
   mainNav.addEventListener("click", (e) => {
     if (e.target.matches(".task-title")) {
-      const currProject = e.target.textContent;
+      const selectedProject = e.target.textContent;
+      currentProject = Projects.getProject(selectedProject);
+      console.log(`Switched to ${currentProject.title} folder`);
       tasksContainer.textContent = "";
-      renderProjectsTasks(currProject);
+      renderProjectsTasks(selectedProject);
     }
   });
   mainNav.addEventListener("click", (e) => {
