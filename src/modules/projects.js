@@ -38,15 +38,10 @@ export default class Projects {
   }
 
   static getTasksProject(taskId) {
-    let currProject;
-    this.#projectsList.forEach((project) => {
-      project.tasks.forEach((task) => {
-        if (task.id === taskId) {
-          currProject = project;
-        }
-      });
-    });
-    return currProject;
+    // returns tasks projects
+    return this.#projectsList.find((project) =>
+      project.tasks.find((task) => task.id === taskId)
+    );
   }
 
   static getAllTasks() {
