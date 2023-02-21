@@ -15,7 +15,7 @@ const screenController = () => {
   const taskForm = document.querySelector(".task-form");
   let currentProject = Projects.getProject("Inbox");
 
-  const generateTaskContainer = (task) => {
+  const renderTask = (task) => {
     const taskContainer = toDoComponent(
       task.title,
       task.dueDate,
@@ -25,23 +25,12 @@ const screenController = () => {
     tasksContainer.appendChild(taskContainer);
   };
 
-  const renderTask = (task) => {
-    generateTaskContainer(task);
-  };
-
-  const renderProjectsTasks = (project) => {
-    const currProjectTasks = Projects.getProject(project).tasks;
-    currProjectTasks.forEach((task) => {
-      generateTaskContainer(task);
-    });
-  };
-
   const renderAllTasks = () => {
     const allTasks = Projects.getAllTasks();
     allTasks.forEach((taskArray) => {
       // skip empty tasks
       if (taskArray[0]) {
-        generateTaskContainer(taskArray[0]);
+        renderTask(taskArray[0]);
       }
     });
   };
@@ -57,7 +46,6 @@ const screenController = () => {
 
   const generateNewTask = (e) => {
     e.preventDefault();
-
     const newTask = ToDo(
       taskForm.taskTitle.value,
       taskForm.dueDate.value,
@@ -81,6 +69,20 @@ const screenController = () => {
     });
   };
 
+  const render = () => {
+    renderAllTasks();
+    renderCustomProjects();
+  };
+
+  const switchProject = (e) => {
+    tasksContainer.textContent = "";
+    const selectedProject = e.target.textContent;
+    currentProject = Projects.getProject(selectedProject);
+    currentProject.tasks.forEach((task) => {
+      renderTask(task);
+    });
+  };
+
   const removeProject = (e) => {
     const parentContainer = e.target.closest(".project");
     const projectsTitle = parentContainer.firstChild.textContent;
@@ -88,13 +90,12 @@ const screenController = () => {
     parentContainer.remove();
   };
 
+  // Event Listeners
+  window.addEventListener("load", render);
+
   mainNav.addEventListener("click", (e) => {
     if (e.target.matches(".task-title")) {
-      const selectedProject = e.target.textContent;
-      currentProject = Projects.getProject(selectedProject);
-      console.log(`Switched to ${currentProject.title} folder`);
-      tasksContainer.textContent = "";
-      renderProjectsTasks(selectedProject);
+      switchProject(e);
     }
   });
   mainNav.addEventListener("click", (e) => {
@@ -118,8 +119,6 @@ const screenController = () => {
       removeTask(e);
     }
   });
-  window.addEventListener("load", renderAllTasks);
-  window.addEventListener("load", renderCustomProjects);
 };
 
 export default screenController;
