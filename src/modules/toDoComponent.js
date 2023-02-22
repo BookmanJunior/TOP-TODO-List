@@ -1,11 +1,11 @@
-export default function toDoComponent(title, dueDate, priority, id) {
+export default function toDoComponent(title, dueDate, priority, status, id) {
   const task = document.createElement("div");
 
   task.classList.add("task");
   task.dataset.id = id;
 
   const leftWrapper = leftSideWrapper(title, priority);
-  const rightWrapper = rightSideWrapper(dueDate);
+  const rightWrapper = rightSideWrapper(dueDate, status);
 
   task.append(leftWrapper, rightWrapper);
 
@@ -22,7 +22,7 @@ function leftSideWrapper(title, priority) {
   return wrapper;
 }
 
-function rightSideWrapper(dueDate) {
+function rightSideWrapper(dueDate, status) {
   const wrapper = document.createElement("div");
 
   wrapper.classList.add("right-wrapper");
@@ -31,7 +31,7 @@ function rightSideWrapper(dueDate) {
     dueDateComponent(dueDate),
     editBtnComponent(),
     deleteBtnComponent(),
-    checkBoxComponent()
+    checkBoxComponent(status)
   );
 
   return wrapper;
@@ -84,11 +84,14 @@ function deleteBtnComponent() {
   return deleteBtn;
 }
 
-function checkBoxComponent() {
+function checkBoxComponent(status = "unchecked") {
   const checkBox = document.createElement("input");
   checkBox.type = "checkbox";
-
   checkBox.classList.add("task-checkbox");
+
+  if (status === "checked") {
+    checkBox.checked = true;
+  }
 
   return checkBox;
 }
