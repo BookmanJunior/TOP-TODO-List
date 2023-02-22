@@ -20,9 +20,7 @@ export default function ToDo(
   };
 
   const changeStatus = (value) => {
-    if (value === "checked" || value === "unchecked") {
-      status = value;
-    }
+    status = value;
   };
 
   return {
