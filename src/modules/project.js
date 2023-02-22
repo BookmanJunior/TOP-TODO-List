@@ -10,6 +10,8 @@ const Project = (name) => {
     tasks.splice(tasksIndex, 1);
   };
 
+  const getTask = (task) => tasks.find((element) => element.id === task);
+
   function getTasksIndex(task) {
     return tasks.findIndex((element) => element.id === task);
   }
@@ -26,6 +28,7 @@ const Project = (name) => {
     },
     addTask,
     removeTask,
+    getTask,
   };
 };
 
