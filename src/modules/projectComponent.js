@@ -17,6 +17,8 @@ export default function projectComponent(projectTitle) {
   deleteBtn.textContent = "Delete";
   editBtn.textContent = "Edit";
 
+  title.dataset.title = projectTitle;
+
   btnContainer.append(editBtn, deleteBtn);
   li.append(title, taskCounter, btnContainer);
 
