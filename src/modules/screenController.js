@@ -10,7 +10,15 @@ const screenController = () => {
     ...document.querySelectorAll(".default-project-title"),
   ];
   const projectsContainer = document.getElementById("projects");
-  const inboxContainer = document.querySelector(".inbox span");
+  const inboxContainer = document
+    .querySelector('[data-title="Inbox"]')
+    .closest(".project");
+  const completedTasksContainer = document
+    .querySelector('[data-title="Completed"]')
+    .closest(".project");
+  const scheduledTasksContainer = document
+    .querySelector('[data-title="Scheduled Tasks"]')
+    .closest(".project");
   const tasksContainer = document.querySelector(".tasks");
   const taskForm = document.querySelector(".task-form");
   let currentProject = Projects.getProject("Inbox");
@@ -20,6 +28,7 @@ const screenController = () => {
       task.title,
       task.dueDate,
       task.priority,
+      task.status,
       task.id
     );
     tasksContainer.appendChild(taskContainer);
@@ -41,7 +50,6 @@ const screenController = () => {
     const selectedProject = Projects.getTasksProject(tasksId);
     parentContainer.remove();
     selectedProject.removeTask(tasksId);
-    console.log(Projects.list[0].tasks);
   };
 
   const generateNewTask = (e) => {
@@ -74,6 +82,17 @@ const screenController = () => {
     renderCustomProjects();
   };
 
+  const activeProjectIndicator = () => {
+    const projectTitleContainer = document.querySelector(
+      `[data-title="${currentProject.title}"]`
+    );
+    const projectsParent = projectTitleContainer.closest(".project");
+    const activeProject = document.querySelector(".active");
+
+    activeProject.classList.remove("active");
+    projectsParent.classList.add("active");
+  };
+
   const switchProject = (e) => {
     tasksContainer.textContent = "";
     const selectedProject = e.target.textContent;
@@ -81,6 +100,7 @@ const screenController = () => {
     currentProject.tasks.forEach((task) => {
       renderTask(task);
     });
+    activeProjectIndicator();
   };
 
   const removeProject = (e) => {
@@ -105,7 +125,17 @@ const screenController = () => {
   });
   inboxContainer.addEventListener("click", () => {
     tasksContainer.textContent = "";
+    currentProject = Projects.getProject(
+      inboxContainer.firstElementChild.getAttribute("data-title")
+    );
+    activeProjectIndicator();
     renderAllTasks();
+  });
+  scheduledTasksContainer.addEventListener("click", (e) => {
+    switchProject(e);
+  });
+  completedTasksContainer.addEventListener("click", (e) => {
+    switchProject(e);
   });
   taskForm.addEventListener("submit", generateNewTask);
   tasksContainer.addEventListener("click", (e) => {
