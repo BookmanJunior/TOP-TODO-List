@@ -3,10 +3,12 @@ import ToDo from "./toDo";
 
 const inbox = Project("Inbox");
 const scheduledTasks = Project("Scheduled Tasks");
+const completedTasks = Project("Completed");
 
 // For testing
 const work = Project("Work");
 const school = Project("School");
+const gym = Project("Gym");
 
 const test1 = ToDo("test", new Date("2023-02-16").toLocaleDateString(), "high");
 const test2 = ToDo(
@@ -21,43 +23,61 @@ work.addTask(test2);
 school.addTask(test3);
 //
 
-export default class Projects {
-  static #projectsList = [inbox, scheduledTasks, work, school];
+const defaultProjects = Projects();
+const userProjects = Projects();
 
-  static addProject(project) {
-    this.#projectsList.push(project);
-  }
+defaultProjects.addProject(inbox);
+defaultProjects.addProject(scheduledTasks);
+defaultProjects.addProject(completedTasks);
+userProjects.addProject(work);
+userProjects.addProject(school);
+userProjects.addProject(gym);
 
-  static removeProject(project) {
-    const projectIndex = this.#getProjectsIndex(project);
-    this.#projectsList.splice(projectIndex, 1);
-  }
+function Projects() {
+  const projectsList = [];
 
-  static getProject(project) {
-    return this.#projectsList.find((element) => element.title === project);
-  }
+  const addProject = (project) => {
+    projectsList.push(project);
+  };
 
-  static getTasksProject(taskId) {
-    // returns tasks projects
-    return this.#projectsList.find((project) =>
+  const removeProject = (project) => {
+    const projectsIndex = getProjectsIndex(project);
+    projectsList.splice(projectsIndex, 1);
+  };
+
+  const getProject = (projectsName) =>
+    projectsList.find((project) => project.title === projectsName);
+
+  const getTasksProject = (taskId) =>
+    projectsList.find((project) =>
       project.tasks.find((task) => task.id === taskId)
     );
-  }
 
-  static getAllTasks() {
-    return this.#projectsList.reduce((allTasks, project) => {
-      allTasks.push(project.tasks);
-      return allTasks;
+  const getAllTasks = () =>
+    projectsList.reduce((newArray, project) => {
+      // skip empty tasks
+      if (project.tasks[0]) {
+        newArray.push(project.tasks[0]);
+      }
+      return newArray;
     }, []);
-  }
 
-  static #getProjectsIndex(project) {
-    return this.#projectsList.findIndex(
-      (element) => element.title.toLowerCase() === project.toLowerCase()
+  function getProjectsIndex(project) {
+    return projectsList.findIndex(
+      (item) => item.title.toLowerCase() === project.toLowerCase()
     );
   }
 
-  static get list() {
-    return this.#projectsList;
-  }
+  return {
+    addProject,
+    removeProject,
+    getProject,
+    getTasksProject,
+    getAllTasks,
+    get projects() {
+      return projectsList;
+    },
+  };
 }
+
+export { Projects, defaultProjects, userProjects };
