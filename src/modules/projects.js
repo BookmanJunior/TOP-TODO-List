@@ -7,7 +7,12 @@ const inbox = Project("Inbox");
 const work = Project("Work");
 const school = Project("School");
 
-const test1 = ToDo("test", new Date("2023-02-16").toLocaleDateString(), "high");
+const test1 = ToDo(
+  "test",
+  new Date("2023-02-16").toLocaleDateString(),
+  "high",
+  "checked"
+);
 const test2 = ToDo(
   "test2",
   new Date("2023-03-10").toLocaleDateString(),
@@ -43,13 +48,17 @@ export default class Projects {
   }
 
   static getAllTasks() {
-    return this.#projectsList.reduce((allTasks, project) => {
-      // skip projects with empty tasks
-      if (project.tasks) {
-        allTasks.push(project.tasks[0]);
+    return this.#projectsList.reduce((tasks, project) => {
+      // skip empty tasks array
+      if (project.tasks[0]) {
+        tasks.push(project.tasks[0]);
       }
-      return allTasks;
+      return tasks;
     }, []);
+  }
+
+  static getCompletedTasks() {
+    return this.getAllTasks().filter((task) => task.status === "checked");
   }
 
   static #getProjectsIndex(project) {
