@@ -6,19 +6,11 @@ import projectComponent from "./projectComponent";
 
 const screenController = () => {
   const mainNav = document.getElementById("mainNav");
-  const defaultProjectsContainer = [
-    ...document.querySelectorAll(".default-project-title"),
-  ];
   const projectsContainer = document.getElementById("projects");
-  const inboxContainer = document
-    .querySelector('[data-title="Inbox"]')
-    .closest(".project");
-  const completedTasksContainer = document
-    .querySelector('[data-title="Completed"]')
-    .closest(".project");
-  const scheduledTasksContainer = document
-    .querySelector('[data-title="Scheduled Tasks"]')
-    .closest(".project");
+  const inboxContainer = document.querySelector('[data-title="Inbox"]');
+  const completedTasksContainer = document.querySelector(
+    '[data-title="Completed"]'
+  );
   const tasksContainer = document.querySelector(".tasks");
   const taskForm = document.querySelector(".task-form");
   let currentProject = Projects.getProject("Inbox");
@@ -36,11 +28,8 @@ const screenController = () => {
 
   const renderAllTasks = () => {
     const allTasks = Projects.getAllTasks();
-    allTasks.forEach((taskArray) => {
-      // skip empty tasks
-      if (taskArray[0]) {
-        renderTask(taskArray[0]);
-      }
+    allTasks.forEach((task) => {
+      renderTask(task);
     });
   };
 
@@ -64,43 +53,40 @@ const screenController = () => {
     taskForm.reset();
   };
 
-  const getDefaultProjectsTitles = () =>
-    defaultProjectsContainer.map((project) => project.textContent);
-
-  const renderCustomProjects = () => {
-    const allProjects = Projects.list;
+  const renderUserProjects = () => {
+    // skip inbox project
+    const allProjects = Projects.list.slice(1);
     allProjects.forEach((project) => {
-      // skip default projects
-      if (!getDefaultProjectsTitles().includes(project.title)) {
-        projectsContainer.appendChild(projectComponent(project.title));
-      }
+      projectsContainer.appendChild(projectComponent(project.title));
     });
   };
 
   const render = () => {
     renderAllTasks();
-    renderCustomProjects();
+    renderUserProjects();
   };
 
-  const activeProjectIndicator = () => {
-    const projectTitleContainer = document.querySelector(
-      `[data-title="${currentProject.title}"]`
-    );
-    const projectsParent = projectTitleContainer.closest(".project");
-    const activeProject = document.querySelector(".active");
+  const activeLinkIndicator = (e) => {
+    const linkContainer = e.target.closest("li");
+    const currentActiveLink = document.querySelector(".active");
 
-    activeProject.classList.remove("active");
-    projectsParent.classList.add("active");
+    currentActiveLink.classList.remove("active");
+    linkContainer.classList.add("active");
   };
 
   const switchProject = (e) => {
+    const projectContainer = e.target.closest(".project");
+    if (projectContainer.classList.contains("active")) {
+      console.log("returned");
+      return;
+    }
     tasksContainer.textContent = "";
     const selectedProject = e.target.textContent;
     currentProject = Projects.getProject(selectedProject);
     currentProject.tasks.forEach((task) => {
       renderTask(task);
     });
-    activeProjectIndicator();
+    activeLinkIndicator(e);
   };
 
   const removeProject = (e) => {
@@ -123,19 +109,21 @@ const screenController = () => {
       removeProject(e);
     }
   });
-  inboxContainer.addEventListener("click", () => {
+
+  inboxContainer.addEventListener("click", (e) => {
     tasksContainer.textContent = "";
     currentProject = Projects.getProject(
-      inboxContainer.firstElementChild.getAttribute("data-title")
+      inboxContainer.getAttribute("data-title")
     );
-    activeProjectIndicator();
+    activeLinkIndicator(e);
     renderAllTasks();
   });
-  scheduledTasksContainer.addEventListener("click", (e) => {
-    switchProject(e);
-  });
   completedTasksContainer.addEventListener("click", (e) => {
-    switchProject(e);
+    tasksContainer.textContent = "";
+    activeLinkIndicator(e);
+    Projects.getCompletedTasks().forEach((task) => {
+      renderTask(task);
+    });
   });
   taskForm.addEventListener("submit", generateNewTask);
   tasksContainer.addEventListener("click", (e) => {
