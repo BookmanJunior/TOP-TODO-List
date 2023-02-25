@@ -2,7 +2,6 @@ import Project from "./project";
 import ToDo from "./toDo";
 
 const inbox = Project("Inbox");
-const scheduledTasks = Project("Scheduled Tasks");
 
 // For testing
 const work = Project("Work");
@@ -22,7 +21,7 @@ school.addTask(test3);
 //
 
 export default class Projects {
-  static #projectsList = [inbox, scheduledTasks, work, school];
+  static #projectsList = [inbox, work, school];
 
   static addProject(project) {
     this.#projectsList.push(project);
@@ -38,7 +37,6 @@ export default class Projects {
   }
 
   static getTasksProject(taskId) {
-    // returns tasks projects
     return this.#projectsList.find((project) =>
       project.tasks.find((task) => task.id === taskId)
     );
@@ -46,7 +44,10 @@ export default class Projects {
 
   static getAllTasks() {
     return this.#projectsList.reduce((allTasks, project) => {
-      allTasks.push(project.tasks);
+      // skip projects with empty tasks
+      if (project.tasks) {
+        allTasks.push(project.tasks[0]);
+      }
       return allTasks;
     }, []);
   }
