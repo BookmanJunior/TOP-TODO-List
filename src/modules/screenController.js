@@ -137,6 +137,18 @@ const screenController = () => {
       removeTask(e);
     }
   });
+  tasksContainer.addEventListener("click", (e) => {
+    const taskContainer = e.target.closest(".task");
+    const tasksId = taskContainer.getAttribute("data-id");
+    const tasksProject = Projects.getTasksProject(tasksId);
+    const currentTask = tasksProject.getTask(tasksId);
+
+    if (e.target.checked) {
+      currentTask.changeStatus("checked");
+    } else {
+      currentTask.changeStatus("unchecked");
+    }
+  });
 };
 
 export default screenController;
