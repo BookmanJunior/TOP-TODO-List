@@ -1,3 +1,4 @@
+import { compareAsc } from "date-fns";
 import Project from "./project";
 import ToDo from "./toDo";
 
@@ -7,18 +8,9 @@ const inbox = Project("Inbox");
 const work = Project("Work");
 const school = Project("School");
 
-const test1 = ToDo(
-  "test",
-  new Date("2023-02-16").toLocaleDateString(),
-  "high",
-  "checked"
-);
-const test2 = ToDo(
-  "test2",
-  new Date("2023-03-10").toLocaleDateString(),
-  "medium"
-);
-const test3 = ToDo("test3", new Date("2023-04-12").toLocaleDateString(), "low");
+const test1 = ToDo("test", new Date("2023-05-16"), "high", "checked");
+const test2 = ToDo("test2", new Date(), "medium");
+const test3 = ToDo("test3", new Date("2023-04-12"), "low");
 
 inbox.addTask(test1);
 work.addTask(test2);
@@ -49,16 +41,17 @@ export default class Projects {
 
   static getAllTasks() {
     return this.#projectsList.reduce((tasks, project) => {
-      // skip empty tasks array
-      if (project.tasks[0]) {
-        tasks.push(project.tasks[0]);
-      }
-      return tasks;
+      tasks.push(project.tasks);
+      return tasks.flat();
     }, []);
   }
 
   static getCompletedTasks() {
     return this.getAllTasks().filter((task) => task.status === "checked");
+  }
+
+  static sortTasksByDate() {
+    return this.getAllTasks().sort((a, b) => compareAsc(a.dueDate, b.dueDate));
   }
 
   static #getProjectsIndex(project) {
