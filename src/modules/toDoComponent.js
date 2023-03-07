@@ -1,3 +1,5 @@
+import format from "date-fns/format";
+
 export default function toDoComponent(title, dueDate, priority, status, id) {
   const task = document.createElement("div");
 
@@ -59,7 +61,8 @@ function dueDateComponent(dueDate) {
 
   dateComponent.classList.add("due-date");
 
-  dateComponent.textContent = dueDate;
+  // convert to readable date
+  dateComponent.textContent = format(new Date(dueDate), "MMM do");
 
   return dateComponent;
 }
