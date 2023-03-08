@@ -7,11 +7,11 @@ import projectComponent from "./projectComponent";
 const screenController = () => {
   const mainNav = document.getElementById("mainNav");
   const projectsContainer = document.getElementById("projects");
-  const inboxContainer = document.querySelector('[data-title="Inbox"]');
-  const completedTasksContainer = document.querySelector(
+  const inboxFolder = document.querySelector('[data-title="Inbox"]');
+  const completedTasksFolder = document.querySelector(
     '[data-title="Completed"]'
   );
-  const todayContainer = document.querySelector('[data-title="Today"]');
+  const todayFolder = document.querySelector('[data-title="Today"]');
   const tasksContainer = document.querySelector(".tasks");
   const taskForm = document.querySelector(".task-form");
   let currentProject = Projects.getProject("Inbox");
@@ -72,7 +72,7 @@ const screenController = () => {
 
     // reset active link to inbox if current active project was deleted
     if (currentActiveLink === null) {
-      inboxContainer.closest("li").classList.add("active");
+      inboxFolder.closest("li").classList.add("active");
       return;
     }
 
@@ -138,14 +138,14 @@ const screenController = () => {
     }
   });
 
-  inboxContainer.addEventListener("click", (e) => {
+  inboxFolder.addEventListener("click", (e) => {
     switchFolder(e, Projects.getAllTasks());
     currentProject = Projects.getProject("Inbox");
   });
-  completedTasksContainer.addEventListener("click", (e) => {
+  completedTasksFolder.addEventListener("click", (e) => {
     switchFolder(e, Projects.getCompletedTasks());
   });
-  todayContainer.addEventListener("click", (e) => {
+  todayFolder.addEventListener("click", (e) => {
     switchFolder(e, Projects.getTodaysTasks());
   });
   taskForm.addEventListener("submit", generateNewTask);
