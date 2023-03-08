@@ -1,4 +1,4 @@
-import { compareAsc } from "date-fns";
+import { isSameDay } from "date-fns";
 import Project from "./project";
 import ToDo from "./toDo";
 
@@ -50,8 +50,12 @@ export default class Projects {
     return this.getAllTasks().filter((task) => task.status === "checked");
   }
 
-  static sortTasksByDate() {
-    return this.getAllTasks().sort((a, b) => compareAsc(a.dueDate, b.dueDate));
+  static getTodaysTasks() {
+    const dateToCompare = new Date();
+    const todaysTask = this.getAllTasks().filter((task) =>
+      isSameDay(dateToCompare, task.dueDate)
+    );
+    return todaysTask;
   }
 
   static #getProjectsIndex(project) {
