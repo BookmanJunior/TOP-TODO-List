@@ -11,9 +11,7 @@ const screenController = () => {
   const completedTasksContainer = document.querySelector(
     '[data-title="Completed"]'
   );
-  const scheduledTasksContainer = document.querySelector(
-    '[data-title="Scheduled Tasks"]'
-  );
+  const todayContainer = document.querySelector('[data-title="Today"]');
   const tasksContainer = document.querySelector(".tasks");
   const taskForm = document.querySelector(".task-form");
   let currentProject = Projects.getProject("Inbox");
@@ -147,8 +145,8 @@ const screenController = () => {
   completedTasksContainer.addEventListener("click", (e) => {
     switchFolder(e, Projects.getCompletedTasks());
   });
-  scheduledTasksContainer.addEventListener("click", (e) => {
-    switchFolder(e, Projects.sortTasksByDate());
+  todayContainer.addEventListener("click", (e) => {
+    switchFolder(e, Projects.getTodaysTasks());
   });
   taskForm.addEventListener("submit", generateNewTask);
   tasksContainer.addEventListener("click", (e) => {
@@ -163,15 +161,17 @@ const screenController = () => {
     }
   });
   tasksContainer.addEventListener("click", (e) => {
-    const taskContainer = e.target.closest(".task");
-    const tasksId = taskContainer.getAttribute("data-id");
-    const tasksProject = Projects.getTasksProject(tasksId);
-    const currentTask = tasksProject.getTask(tasksId);
+    if (e.target.type === "checkbox") {
+      const taskContainer = e.target.closest(".task");
+      const tasksId = taskContainer.getAttribute("data-id");
+      const tasksProject = Projects.getTasksProject(tasksId);
+      const currentTask = tasksProject.getTask(tasksId);
 
-    if (e.target.checked) {
-      currentTask.changeStatus("checked");
-    } else {
-      currentTask.changeStatus("unchecked");
+      if (e.target.checked) {
+        currentTask.changeStatus("checked");
+      } else {
+        currentTask.changeStatus("unchecked");
+      }
     }
   });
 };
