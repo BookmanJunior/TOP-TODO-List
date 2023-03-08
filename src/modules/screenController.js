@@ -11,6 +11,9 @@ const screenController = () => {
   const completedTasksContainer = document.querySelector(
     '[data-title="Completed"]'
   );
+  const scheduledTasksContainer = document.querySelector(
+    '[data-title="Scheduled Tasks"]'
+  );
   const tasksContainer = document.querySelector(".tasks");
   const taskForm = document.querySelector(".task-form");
   let currentProject = Projects.getProject("Inbox");
@@ -27,8 +30,7 @@ const screenController = () => {
   };
 
   const renderAllTasks = () => {
-    const allTasks = Projects.getAllTasks();
-    allTasks.forEach((task) => {
+    Projects.getAllTasks().forEach((task) => {
       renderTask(task);
     });
   };
@@ -55,8 +57,8 @@ const screenController = () => {
 
   const renderUserProjects = () => {
     // skip inbox project
-    const allProjects = Projects.list.slice(1);
-    allProjects.forEach((project) => {
+    const allUserProjects = Projects.list.slice(1);
+    allUserProjects.forEach((project) => {
       projectsContainer.appendChild(projectComponent(project.title));
     });
   };
@@ -66,9 +68,15 @@ const screenController = () => {
     renderUserProjects();
   };
 
-  const activeLinkIndicator = (e) => {
+  const changeActiveLink = (e) => {
     const linkContainer = e.target.closest("li");
     const currentActiveLink = document.querySelector(".active");
+
+    // reset active link to inbox if current active project was deleted
+    if (currentActiveLink === null) {
+      inboxContainer.closest("li").classList.add("active");
+      return;
+    }
 
     currentActiveLink.classList.remove("active");
     linkContainer.classList.add("active");
@@ -76,22 +84,44 @@ const screenController = () => {
 
   const switchProject = (e) => {
     const projectContainer = e.target.closest(".project");
+
     if (projectContainer.classList.contains("active")) {
-      console.log("returned");
       return;
     }
+
     tasksContainer.textContent = "";
+    changeActiveLink(e);
     const selectedProject = e.target.textContent;
     currentProject = Projects.getProject(selectedProject);
     currentProject.tasks.forEach((task) => {
       renderTask(task);
     });
-    activeLinkIndicator(e);
+  };
+
+  const switchFolder = (e, fn) => {
+    const currentFolder = e.target.closest("li");
+
+    if (currentFolder.classList.contains("active")) {
+      return;
+    }
+
+    tasksContainer.textContent = "";
+    changeActiveLink(e);
+    fn.forEach((task) => {
+      renderTask(task);
+    });
   };
 
   const removeProject = (e) => {
     const parentContainer = e.target.closest(".project");
-    const projectsTitle = parentContainer.firstChild.textContent;
+    const projectsTitle = parentContainer.firstChild.getAttribute("data-title");
+
+    // switch to default Inbox folder if active project was deleted
+    if (parentContainer.classList.contains("active")) {
+      e.target.closest("li").classList.remove("active");
+      switchFolder(e, Projects.getAllTasks());
+    }
+
     Projects.removeProject(projectsTitle);
     parentContainer.remove();
   };
@@ -111,19 +141,14 @@ const screenController = () => {
   });
 
   inboxContainer.addEventListener("click", (e) => {
-    tasksContainer.textContent = "";
-    currentProject = Projects.getProject(
-      inboxContainer.getAttribute("data-title")
-    );
-    activeLinkIndicator(e);
-    renderAllTasks();
+    switchFolder(e, Projects.getAllTasks());
+    currentProject = Projects.getProject("Inbox");
   });
   completedTasksContainer.addEventListener("click", (e) => {
-    tasksContainer.textContent = "";
-    activeLinkIndicator(e);
-    Projects.getCompletedTasks().forEach((task) => {
-      renderTask(task);
-    });
+    switchFolder(e, Projects.getCompletedTasks());
+  });
+  scheduledTasksContainer.addEventListener("click", (e) => {
+    switchFolder(e, Projects.sortTasksByDate());
   });
   taskForm.addEventListener("submit", generateNewTask);
   tasksContainer.addEventListener("click", (e) => {
