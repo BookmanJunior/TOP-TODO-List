@@ -1,4 +1,3 @@
-import { isSameDay, isSameWeek } from "date-fns";
 import Project from "./project";
 import ToDo from "./toDo";
 
@@ -37,33 +36,6 @@ export default class Projects {
     return this.#projectsList.find((project) =>
       project.tasks.find((task) => task.id === taskId)
     );
-  }
-
-  static getAllTasks() {
-    return this.#projectsList.reduce((tasks, project) => {
-      tasks.push(project.tasks);
-      return tasks.flat();
-    }, []);
-  }
-
-  static getCompletedTasks() {
-    return this.getAllTasks().filter((task) => task.status === "checked");
-  }
-
-  static getTodaysTasks() {
-    const dateToCompare = new Date();
-    const todaysTask = this.getAllTasks().filter((task) =>
-      isSameDay(dateToCompare, new Date(task.dueDate))
-    );
-    return todaysTask;
-  }
-
-  static getThisWeeksTasks() {
-    const dateToCompare = new Date();
-    const thisWeeksTasks = this.getAllTasks().filter((task) =>
-      isSameWeek(dateToCompare, new Date(task.dueDate))
-    );
-    return thisWeeksTasks;
   }
 
   static #getProjectsIndex(project) {
