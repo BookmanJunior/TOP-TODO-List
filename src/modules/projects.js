@@ -1,4 +1,4 @@
-import { isSameDay } from "date-fns";
+import { isSameDay, isSameWeek } from "date-fns";
 import Project from "./project";
 import ToDo from "./toDo";
 
@@ -53,9 +53,17 @@ export default class Projects {
   static getTodaysTasks() {
     const dateToCompare = new Date();
     const todaysTask = this.getAllTasks().filter((task) =>
-      isSameDay(dateToCompare, task.dueDate)
+      isSameDay(dateToCompare, new Date(task.dueDate))
     );
     return todaysTask;
+  }
+
+  static getThisWeeksTasks() {
+    const dateToCompare = new Date();
+    const thisWeeksTasks = this.getAllTasks().filter((task) =>
+      isSameWeek(dateToCompare, new Date(task.dueDate))
+    );
+    return thisWeeksTasks;
   }
 
   static #getProjectsIndex(project) {
