@@ -6,25 +6,28 @@ export default function toDoComponent(title, dueDate, priority, status, id) {
   task.classList.add("task");
   task.dataset.id = id;
 
-  const leftWrapper = leftSideWrapper(title, priority);
-  const rightWrapper = rightSideWrapper(dueDate, status);
+  const leftWrapper = leftSideWrapper(title, priority, status);
+  const rightWrapper = rightSideWrapper(dueDate);
 
   task.append(leftWrapper, rightWrapper);
 
   return task;
 }
 
-function leftSideWrapper(title, priority) {
+function leftSideWrapper(title, priority, status) {
   const wrapper = document.createElement("div");
 
   wrapper.classList.add("left-wrapper");
 
-  wrapper.append(priorityComponent(priority), taskTitleComponent(title));
+  wrapper.append(
+    checkBoxComponent(priority, status),
+    taskTitleComponent(title)
+  );
 
   return wrapper;
 }
 
-function rightSideWrapper(dueDate, status) {
+function rightSideWrapper(dueDate) {
   const wrapper = document.createElement("div");
 
   wrapper.classList.add("right-wrapper");
@@ -32,19 +35,10 @@ function rightSideWrapper(dueDate, status) {
   wrapper.append(
     dueDateComponent(dueDate),
     editBtnComponent(),
-    deleteBtnComponent(),
-    checkBoxComponent(status)
+    deleteBtnComponent()
   );
 
   return wrapper;
-}
-
-function priorityComponent(priority) {
-  const prioritySpan = document.createElement("span");
-  prioritySpan.classList.add(`${priority}-priority`, "priority-btn");
-  prioritySpan.setAttribute("title", priority);
-
-  return prioritySpan;
 }
 
 function taskTitleComponent(title) {
@@ -87,10 +81,11 @@ function deleteBtnComponent() {
   return deleteBtn;
 }
 
-function checkBoxComponent(status = "unchecked") {
+function checkBoxComponent(priority, status = "unchecked") {
   const checkBox = document.createElement("input");
   checkBox.type = "checkbox";
-  checkBox.classList.add("task-checkbox");
+  checkBox.classList.add("task-checkbox", `${priority}-priority`);
+  checkBox.setAttribute("title", priority);
 
   if (status === "checked") {
     checkBox.checked = true;
