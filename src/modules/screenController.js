@@ -1,4 +1,5 @@
 import Projects from "./projects";
+import taskController from "./taskController";
 import ToDo from "./toDo";
 import toDoComponent from "./toDoComponent";
 import toDoFormComponent from "./toDoFormComponent";
@@ -29,7 +30,7 @@ const screenController = () => {
   };
 
   const renderAllTasks = () => {
-    Projects.getAllTasks().forEach((task) => {
+    taskController.getAllTasks().forEach((task) => {
       renderTask(task);
     });
   };
@@ -118,7 +119,7 @@ const screenController = () => {
     // switch to default Inbox folder if active project was deleted
     if (parentContainer.classList.contains("active")) {
       e.target.closest("li").classList.remove("active");
-      switchFolder(e, Projects.getAllTasks());
+      switchFolder(e, taskController.getAllTasks());
     }
 
     Projects.removeProject(projectsTitle);
@@ -140,17 +141,17 @@ const screenController = () => {
   });
 
   inboxFolder.addEventListener("click", (e) => {
-    switchFolder(e, Projects.getAllTasks());
-    currentProject = Projects.getProject("Inbox");
+    switchFolder(e, taskController.getAllTasks());
+    currentProject = taskController.getProject("Inbox");
   });
   completedTasksFolder.addEventListener("click", (e) => {
-    switchFolder(e, Projects.getCompletedTasks());
+    switchFolder(e, taskController.getCompletedTasks());
   });
   todayFolder.addEventListener("click", (e) => {
-    switchFolder(e, Projects.getTodaysTasks());
+    switchFolder(e, taskController.getTodaysTasks());
   });
   thisWeeksFolder.addEventListener("click", (e) => {
-    switchFolder(e, Projects.getThisWeeksTasks());
+    switchFolder(e, taskController.getThisWeeksTasks());
   });
   taskForm.addEventListener("submit", generateNewTask);
   tasksContainer.addEventListener("click", (e) => {
