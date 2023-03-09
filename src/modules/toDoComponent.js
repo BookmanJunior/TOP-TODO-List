@@ -19,10 +19,7 @@ function leftSideWrapper(title, priority, status) {
 
   wrapper.classList.add("left-wrapper");
 
-  wrapper.append(
-    checkBoxComponent(priority, status),
-    taskTitleComponent(title)
-  );
+  wrapper.append(checkboxElement(priority, status), taskTitleElement(title));
 
   return wrapper;
 }
@@ -32,16 +29,12 @@ function rightSideWrapper(dueDate) {
 
   wrapper.classList.add("right-wrapper");
 
-  wrapper.append(
-    dueDateComponent(dueDate),
-    editBtnComponent(),
-    deleteBtnComponent()
-  );
+  wrapper.append(dueDateElement(dueDate), editBtnElement(), deleteBtnElement());
 
   return wrapper;
 }
 
-function taskTitleComponent(title) {
+function taskTitleElement(title) {
   const taskTitle = document.createElement("span");
   taskTitle.classList.add("task-title");
 
@@ -50,7 +43,7 @@ function taskTitleComponent(title) {
   return taskTitle;
 }
 
-function dueDateComponent(dueDate) {
+function dueDateElement(dueDate) {
   const dateComponent = document.createElement("span");
 
   dateComponent.classList.add("due-date");
@@ -61,7 +54,7 @@ function dueDateComponent(dueDate) {
   return dateComponent;
 }
 
-function editBtnComponent() {
+function editBtnElement() {
   const editBtn = document.createElement("button");
 
   editBtn.classList.add("edit-btn");
@@ -71,7 +64,7 @@ function editBtnComponent() {
   return editBtn;
 }
 
-function deleteBtnComponent() {
+function deleteBtnElement() {
   const deleteBtn = document.createElement("button");
 
   deleteBtn.classList.add("delete-btn");
@@ -81,7 +74,7 @@ function deleteBtnComponent() {
   return deleteBtn;
 }
 
-function checkBoxComponent(priority, status = "unchecked") {
+function checkboxElement(priority, status = "unchecked") {
   const checkBox = document.createElement("input");
   checkBox.type = "checkbox";
   checkBox.classList.add("task-checkbox", `${priority}-priority`);
