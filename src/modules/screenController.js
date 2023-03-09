@@ -116,14 +116,14 @@ const screenController = () => {
     const parentContainer = e.target.closest(".project");
     const projectsTitle = parentContainer.firstChild.getAttribute("data-title");
 
+    Projects.removeProject(projectsTitle);
+    parentContainer.remove();
+
     // switch to default Inbox folder if active project was deleted
     if (parentContainer.classList.contains("active")) {
       e.target.closest("li").classList.remove("active");
       switchFolder(e, taskController.getAllTasks());
     }
-
-    Projects.removeProject(projectsTitle);
-    parentContainer.remove();
   };
 
   // Event Listeners
@@ -142,7 +142,7 @@ const screenController = () => {
 
   inboxFolder.addEventListener("click", (e) => {
     switchFolder(e, taskController.getAllTasks());
-    currentProject = taskController.getProject("Inbox");
+    currentProject = Projects.getProject("Inbox");
   });
   completedTasksFolder.addEventListener("click", (e) => {
     switchFolder(e, taskController.getCompletedTasks());
