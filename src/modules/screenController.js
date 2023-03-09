@@ -12,6 +12,7 @@ const screenController = () => {
     '[data-title="Completed"]'
   );
   const todayFolder = document.querySelector('[data-title="Today"]');
+  const thisWeeksFolder = document.querySelector('[data-title="This Week"]');
   const tasksContainer = document.querySelector(".tasks");
   const taskForm = document.querySelector(".task-form");
   let currentProject = Projects.getProject("Inbox");
@@ -147,6 +148,9 @@ const screenController = () => {
   });
   todayFolder.addEventListener("click", (e) => {
     switchFolder(e, Projects.getTodaysTasks());
+  });
+  thisWeeksFolder.addEventListener("click", (e) => {
+    switchFolder(e, Projects.getThisWeeksTasks());
   });
   taskForm.addEventListener("submit", generateNewTask);
   tasksContainer.addEventListener("click", (e) => {
