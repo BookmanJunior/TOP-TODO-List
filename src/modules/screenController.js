@@ -82,29 +82,32 @@ const screenController = () => {
     linkContainer.classList.add("active");
   };
 
-  const switchProject = (e) => {
+  const switchProject = (e, project) => {
     const projectContainer = e.target.closest(".project");
 
     if (projectContainer.classList.contains("active")) {
       return;
     }
 
+    taskForm.style.display = "flex";
     tasksContainer.textContent = "";
     changeActiveLink(e);
-    const selectedProject = e.target.textContent;
-    currentProject = Projects.getProject(selectedProject);
-    currentProject.tasks.forEach((task) => {
+    const selectedProject = e.target.getAttribute("data-project");
+    currentProject =
+      Projects.getProject(selectedProject) ?? Projects.getProject("Inbox");
+    project.forEach((task) => {
       renderTask(task);
     });
   };
 
   const switchFolder = (e, fn) => {
-    const currentFolder = e.target.closest("li");
+    const currentFolder = e.target.closest(".menu-link");
 
     if (currentFolder.classList.contains("active")) {
       return;
     }
 
+    taskForm.style.display = "none";
     tasksContainer.textContent = "";
     changeActiveLink(e);
     fn.forEach((task) => {
@@ -114,7 +117,8 @@ const screenController = () => {
 
   const removeProject = (e) => {
     const parentContainer = e.target.closest(".project");
-    const projectsTitle = parentContainer.firstChild.getAttribute("data-title");
+    const projectsTitle =
+      parentContainer.firstChild.getAttribute("data-project");
 
     Projects.removeProject(projectsTitle);
     parentContainer.remove();
@@ -122,7 +126,7 @@ const screenController = () => {
     // switch to default Inbox folder if active project was deleted
     if (parentContainer.classList.contains("active")) {
       e.target.closest("li").classList.remove("active");
-      switchFolder(e, taskController.getAllTasks());
+      switchProject(e, taskController.getAllTasks());
     }
   };
 
@@ -130,8 +134,8 @@ const screenController = () => {
   window.addEventListener("load", render);
 
   mainNav.addEventListener("click", (e) => {
-    if (e.target.matches(".task-title")) {
-      switchProject(e);
+    if (e.target.matches(".project-title")) {
+      switchProject(e, currentProject.tasks);
     }
   });
   mainNav.addEventListener("click", (e) => {
@@ -141,8 +145,7 @@ const screenController = () => {
   });
 
   inboxFolder.addEventListener("click", (e) => {
-    switchFolder(e, taskController.getAllTasks());
-    currentProject = Projects.getProject("Inbox");
+    switchProject(e, taskController.getAllTasks());
   });
   completedTasksFolder.addEventListener("click", (e) => {
     switchFolder(e, taskController.getCompletedTasks());
