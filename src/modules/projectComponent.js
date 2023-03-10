@@ -7,7 +7,7 @@ export default function projectComponent(projectTitle) {
   const editBtn = document.createElement("button");
 
   li.classList.add("project");
-  title.classList.add("task-title");
+  title.classList.add("project-title");
   taskCounter.classList.add("task-counter");
   btnContainer.classList.add("btn-container");
   deleteBtn.classList.add("delete-btn");
@@ -17,7 +17,7 @@ export default function projectComponent(projectTitle) {
   deleteBtn.textContent = "Delete";
   editBtn.textContent = "Edit";
 
-  title.dataset.title = projectTitle;
+  title.dataset.project = projectTitle;
 
   btnContainer.append(editBtn, deleteBtn);
   li.append(title, taskCounter, btnContainer);
