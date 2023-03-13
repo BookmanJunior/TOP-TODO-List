@@ -8,12 +8,12 @@ import projectComponent from "./projectComponent";
 const screenController = () => {
   const mainNav = document.getElementById("mainNav");
   const projectsContainer = document.getElementById("projects");
-  const inboxFolder = document.querySelector('[data-title="Inbox"]');
+  const inboxFolder = document.querySelector('[data-project="Inbox"]');
   const completedTasksFolder = document.querySelector(
-    '[data-title="Completed"]'
+    '[data-folder="Completed"]'
   );
-  const todayFolder = document.querySelector('[data-title="Today"]');
-  const thisWeeksFolder = document.querySelector('[data-title="This Week"]');
+  const todayFolder = document.querySelector('[data-folder="Today"]');
+  const thisWeeksFolder = document.querySelector('[data-folder="This Week"]');
   const tasksContainer = document.querySelector(".tasks");
   const taskForm = document.querySelector(".task-form");
   let currentProject = Projects.getProject("Inbox");
@@ -82,7 +82,7 @@ const screenController = () => {
     linkContainer.classList.add("active");
   };
 
-  const switchProject = (e, project) => {
+  const switchProject = (e) => {
     const projectContainer = e.target.closest(".project");
 
     if (projectContainer.classList.contains("active")) {
@@ -92,10 +92,17 @@ const screenController = () => {
     taskForm.style.display = "flex";
     tasksContainer.textContent = "";
     changeActiveLink(e);
-    const selectedProject = e.target.getAttribute("data-project");
-    currentProject =
-      Projects.getProject(selectedProject) ?? Projects.getProject("Inbox");
-    project.forEach((task) => {
+    const selectedProject = e.target.getAttribute("data-project") ?? "Inbox";
+    currentProject = Projects.getProject(selectedProject);
+
+    if (currentProject.title === "Inbox") {
+      taskController.getAllTasks().forEach((task) => {
+        renderTask(task);
+      });
+      return;
+    }
+
+    currentProject.tasks.forEach((task) => {
       renderTask(task);
     });
   };
@@ -120,14 +127,14 @@ const screenController = () => {
     const projectsTitle =
       parentContainer.firstChild.getAttribute("data-project");
 
-    Projects.removeProject(projectsTitle);
-    parentContainer.remove();
-
     // switch to default Inbox folder if active project was deleted
     if (parentContainer.classList.contains("active")) {
       e.target.closest("li").classList.remove("active");
       switchProject(e, taskController.getAllTasks());
     }
+
+    Projects.removeProject(projectsTitle);
+    parentContainer.remove();
   };
 
   // Event Listeners
@@ -135,7 +142,7 @@ const screenController = () => {
 
   mainNav.addEventListener("click", (e) => {
     if (e.target.matches(".project-title")) {
-      switchProject(e, currentProject.tasks);
+      switchProject(e);
     }
   });
   mainNav.addEventListener("click", (e) => {
@@ -145,7 +152,7 @@ const screenController = () => {
   });
 
   inboxFolder.addEventListener("click", (e) => {
-    switchProject(e, taskController.getAllTasks());
+    switchProject(e);
   });
   completedTasksFolder.addEventListener("click", (e) => {
     switchFolder(e, taskController.getCompletedTasks());
