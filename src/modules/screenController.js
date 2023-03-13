@@ -127,14 +127,14 @@ const screenController = () => {
     const projectsTitle =
       parentContainer.firstChild.getAttribute("data-project");
 
+    Projects.removeProject(projectsTitle);
+    parentContainer.remove();
+
     // switch to default Inbox folder if active project was deleted
     if (parentContainer.classList.contains("active")) {
       e.target.closest("li").classList.remove("active");
       switchProject(e, taskController.getAllTasks());
     }
-
-    Projects.removeProject(projectsTitle);
-    parentContainer.remove();
   };
 
   // Event Listeners
