@@ -18,6 +18,13 @@ const screenController = () => {
   const taskForm = document.querySelector(".task-form");
   let currentProject = Projects.getProject("Inbox");
 
+  const defaultFolderFunctions = () => ({
+    Inbox: taskController.getAllTasks(),
+    Today: taskController.getTodaysTasks(),
+    Completed: taskController.getCompletedTasks(),
+    "This Week": taskController.getThisWeeksTasks(),
+  });
+
   const renderTask = (task) => {
     const taskContainer = toDoComponent(
       task.title,
@@ -82,21 +89,19 @@ const screenController = () => {
     linkContainer.classList.add("active");
   };
 
-  const switchProject = (e) => {
-    const projectContainer = e.target.closest(".project");
+  const refreshTasks = () => {
+    const defaultFolders = defaultFolderFunctions();
+    const folderExists = Object.keys(defaultFolders).includes(currentProject);
 
-    if (projectContainer.classList.contains("active")) {
+    tasksContainer.textContent = "";
+
+    if (currentProject.title === "Inbox") {
+      renderAllTasks();
       return;
     }
 
-    taskForm.style.display = "flex";
-    tasksContainer.textContent = "";
-    changeActiveLink(e);
-    const selectedProject = e.target.getAttribute("data-project") ?? "Inbox";
-    currentProject = Projects.getProject(selectedProject);
-
-    if (currentProject.title === "Inbox") {
-      taskController.getAllTasks().forEach((task) => {
+    if (folderExists) {
+      defaultFolders[currentProject].forEach((task) => {
         renderTask(task);
       });
       return;
@@ -107,7 +112,22 @@ const screenController = () => {
     });
   };
 
-  const switchFolder = (e, fn) => {
+  const switchProject = (e) => {
+    const projectContainer = e.target.closest(".project");
+
+    // return if active link is clicked
+    if (projectContainer.classList.contains("active")) {
+      return;
+    }
+
+    taskForm.style.display = "flex";
+    const selectedProject = e.target.getAttribute("data-project") ?? "Inbox";
+    currentProject = Projects.getProject(selectedProject);
+    refreshTasks();
+    changeActiveLink(e);
+  };
+
+  const switchFolder = (e) => {
     const currentFolder = e.target.closest(".menu-link");
 
     if (currentFolder.classList.contains("active")) {
@@ -115,11 +135,10 @@ const screenController = () => {
     }
 
     taskForm.style.display = "none";
-    tasksContainer.textContent = "";
+    currentProject =
+      currentFolder.firstElementChild.getAttribute("data-folder");
+    refreshTasks();
     changeActiveLink(e);
-    fn.forEach((task) => {
-      renderTask(task);
-    });
   };
 
   const removeProject = (e) => {
@@ -133,7 +152,7 @@ const screenController = () => {
     // switch to default Inbox folder if active project was deleted
     if (parentContainer.classList.contains("active")) {
       e.target.closest("li").classList.remove("active");
-      switchProject(e, taskController.getAllTasks());
+      switchProject(e);
     }
   };
 
@@ -148,6 +167,7 @@ const screenController = () => {
   mainNav.addEventListener("click", (e) => {
     if (e.target.matches(".delete-btn")) {
       removeProject(e);
+      refreshTasks();
     }
   });
 
@@ -155,13 +175,13 @@ const screenController = () => {
     switchProject(e);
   });
   completedTasksFolder.addEventListener("click", (e) => {
-    switchFolder(e, taskController.getCompletedTasks());
+    switchFolder(e);
   });
   todayFolder.addEventListener("click", (e) => {
-    switchFolder(e, taskController.getTodaysTasks());
+    switchFolder(e);
   });
   thisWeeksFolder.addEventListener("click", (e) => {
-    switchFolder(e, taskController.getThisWeeksTasks());
+    switchFolder(e);
   });
   taskForm.addEventListener("submit", generateNewTask);
   tasksContainer.addEventListener("click", (e) => {
@@ -186,6 +206,7 @@ const screenController = () => {
         currentTask.changeStatus("checked");
       } else {
         currentTask.changeStatus("unchecked");
+        refreshTasks();
       }
     }
   });
