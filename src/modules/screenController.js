@@ -3,7 +3,7 @@ import taskController from "./taskController";
 import ToDo from "./toDo";
 import generateTaskComponent from "./toDoComponent";
 import toDoFormComponent from "./toDoFormComponent";
-import projectComponent from "./projectComponent";
+import { projectComponent, editProjectComponent } from "./projectComponent";
 
 const screenController = () => {
   const mainNav = document.getElementById("mainNav");
@@ -20,6 +20,7 @@ const screenController = () => {
   const projectAddBtn = document.getElementById("addProjectBtn");
   const cancelProjectFormBtn = document.querySelector(".cancel-project-btn");
   let currentProject = Projects.getProject("Inbox");
+  let currentEditProject;
   let activeTask;
 
   const defaultFolderFunctions = () => ({
@@ -46,6 +47,29 @@ const screenController = () => {
     const selectedProject = Projects.getTasksProject(tasksId);
     parentContainer.remove();
     selectedProject.removeTask(tasksId);
+  };
+
+  const refreshTasks = () => {
+    const defaultFolders = defaultFolderFunctions();
+    const folderExists = Object.keys(defaultFolders).includes(currentProject);
+
+    tasksContainer.textContent = "";
+
+    if (currentProject.title === "Inbox") {
+      renderAllTasks();
+      return;
+    }
+
+    if (folderExists) {
+      defaultFolders[currentProject].forEach((task) => {
+        renderTask(task);
+      });
+      return;
+    }
+
+    currentProject.tasks.forEach((task) => {
+      renderTask(task);
+    });
   };
 
   const editTask = (e) => {
@@ -95,9 +119,24 @@ const screenController = () => {
     });
   };
 
+  const refreshUserProjects = () => {
+    projectsContainer.textContent = "";
+    renderUserProjects();
+  };
+
   const render = () => {
     renderAllTasks();
     renderUserProjects();
+  };
+
+  const editUserProject = (e) => {
+    const projectContainer = e.target.closest(".project");
+    const projectTitle =
+      projectContainer.firstElementChild.getAttribute("data-project");
+    currentEditProject = Projects.getProject(projectTitle);
+    projectContainer.replaceWith(
+      editProjectComponent(currentEditProject.title)
+    );
   };
 
   const changeActiveLink = (e) => {
@@ -112,29 +151,6 @@ const screenController = () => {
 
     currentActiveLink.classList.remove("active");
     linkContainer.classList.add("active");
-  };
-
-  const refreshTasks = () => {
-    const defaultFolders = defaultFolderFunctions();
-    const folderExists = Object.keys(defaultFolders).includes(currentProject);
-
-    tasksContainer.textContent = "";
-
-    if (currentProject.title === "Inbox") {
-      renderAllTasks();
-      return;
-    }
-
-    if (folderExists) {
-      defaultFolders[currentProject].forEach((task) => {
-        renderTask(task);
-      });
-      return;
-    }
-
-    currentProject.tasks.forEach((task) => {
-      renderTask(task);
-    });
   };
 
   const switchProject = (e) => {
@@ -258,9 +274,38 @@ const screenController = () => {
     toggleProjectForm();
   });
 
+  projectsContainer.addEventListener("click", (e) => {
+    if (e.target.matches(".edit-btn")) {
+      // remove previous edit form
+      editFormExist("edit-project-form");
+      editUserProject(e);
+    }
+  });
+
+  projectsContainer.addEventListener("click", (e) => {
+    const projectInput = document.querySelector(".edit-project-title");
+
+    if (e.target.matches(".save-project-change")) {
+      currentEditProject.title = projectInput.value;
+      refreshUserProjects();
+      return;
+    }
+
+    if (e.target.matches(".cancel-project-change")) {
+      refreshUserProjects();
+    }
+  });
+
   function toggleProjectForm() {
     const ProjectFormDisplay = window.getComputedStyle(projectForm).display;
     projectForm.style.display = ProjectFormDisplay === "none" ? "flex" : "none";
+  }
+
+  function editFormExist(editFormClass) {
+    const editFormExists = document.querySelector(`.${editFormClass}`);
+    if (editFormExists) {
+      editFormExists.replaceWith(projectComponent(currentEditProject.title));
+    }
   }
 };
 
