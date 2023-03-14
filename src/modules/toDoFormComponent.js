@@ -1,7 +1,7 @@
-export default function toDoFormComponent(elementClass) {
+export default function toDoFormComponent() {
   const taskForm = document.createElement("form");
 
-  taskForm.classList.add(elementClass);
+  taskForm.classList.add("edit-form");
 
   taskForm.append(leftSideWrapper(), rightSideWrapper());
 
@@ -33,7 +33,10 @@ function rightSideWrapper() {
 
   wrapper.classList.add("right-wrapper");
 
-  wrapper.append(datePicker(), addBtn());
+  const addBtn = btnFactory("submit", "save-btn", "+");
+  const cancelBtn = btnFactory("button", "cancel-btn", "cancel");
+
+  wrapper.append(datePicker(), addBtn.btn, cancelBtn.btn);
 
   return wrapper;
 }
@@ -69,11 +72,11 @@ function datePicker() {
   return date;
 }
 
-function addBtn() {
+function btnFactory(type, className, value) {
   const btn = document.createElement("input");
-  btn.type = "submit";
-  btn.classList.add("add-btn");
-  btn.value = "+";
+  btn.type = type;
+  btn.classList.add(className);
+  btn.value = value;
 
-  return btn;
+  return { btn };
 }
