@@ -38,13 +38,18 @@
         <button class="add-project-btn" id="addProjectBtn">
           + Add Project
         </button>
-        <div class="project-form" id="projectForm">
-          <input type="text" id="projectInput" class="project-input" />
+        <form class="project-form" id="projectForm">
+          <input type="text" id="projectInput" class="project-input" required />
           <div class="project-form-btns">
-            <button class="project-form-add-btn">Add</button>
-            <button class="cancel-project-btn">Cancel</button>
+            <input type="Submit" class="project-form-add-btn" value="Add" />
+            <input
+              type="button"
+              class="cancel-project-btn"
+              value="Cancel"
+              formnovalidate
+            />
           </div>
-        </div>
+        </form>
       </nav>
       <div class="tasks-container" id="tasksContainer">
         <form class="task-form">
