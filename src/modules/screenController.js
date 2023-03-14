@@ -17,6 +17,7 @@ const screenController = () => {
   const tasksContainer = document.querySelector(".tasks");
   const taskForm = document.querySelector(".task-form");
   let currentProject = Projects.getProject("Inbox");
+  let activeTask;
 
   const defaultFolderFunctions = () => ({
     Inbox: taskController.getAllTasks(),
@@ -25,7 +26,7 @@ const screenController = () => {
     "This Week": taskController.getThisWeeksTasks(),
   });
 
-  const renderTask = (task) => {
+  const generateNewTaskComponent = (task) => {
     const taskContainer = toDoComponent(
       task.title,
       task.dueDate,
@@ -33,7 +34,11 @@ const screenController = () => {
       task.status,
       task.id
     );
-    tasksContainer.appendChild(taskContainer);
+    return taskContainer;
+  };
+
+  const renderTask = (task) => {
+    tasksContainer.appendChild(generateNewTaskComponent(task));
   };
 
   const renderAllTasks = () => {
@@ -48,6 +53,33 @@ const screenController = () => {
     const selectedProject = Projects.getTasksProject(tasksId);
     parentContainer.remove();
     selectedProject.removeTask(tasksId);
+  };
+
+  const editTask = (e) => {
+    if (e.target.matches(".edit-btn")) {
+      const taskElement = e.target.closest(".task");
+      const tasksProject = Projects.getTasksProject(
+        taskElement.getAttribute("data-id")
+      );
+      const task = tasksProject.getTask(taskElement.getAttribute("data-id"));
+      activeTask = task;
+      const toDoForm = toDoFormComponent();
+      toDoForm.priority.value = task.priority;
+      toDoForm.taskTitle.value = task.title;
+      toDoForm.dueDate.valueAsDate = new Date(task.dueDate);
+      taskElement.replaceWith(toDoForm);
+    }
+  };
+
+  const saveEditedTask = (e) => {
+    e.preventDefault();
+    if (e.target.matches(".edit-form")) {
+      activeTask.changePriority(e.target.priority.value);
+      activeTask.changeTitle(e.target.taskTitle.value);
+      activeTask.changeDueDate(e.target.dueDate.valueAsDate);
+      const taskContainer = generateNewTaskComponent(activeTask);
+      e.target.replaceWith(taskContainer);
+    }
   };
 
   const generateNewTask = (e) => {
@@ -184,15 +216,20 @@ const screenController = () => {
     switchFolder(e);
   });
   taskForm.addEventListener("submit", generateNewTask);
+  tasksContainer.addEventListener("submit", saveEditedTask);
   tasksContainer.addEventListener("click", (e) => {
     if (e.target.matches(".edit-btn")) {
-      const taskElement = e.target.closest(".task");
-      taskElement.replaceWith(toDoFormComponent("edit-form"));
+      editTask(e);
     }
   });
   tasksContainer.addEventListener("click", (e) => {
     if (e.target.matches(".delete-btn")) {
       removeTask(e);
+    }
+  });
+  tasksContainer.addEventListener("click", (e) => {
+    if (e.target.matches(".cancel-btn")) {
+      refreshTasks();
     }
   });
   tasksContainer.addEventListener("click", (e) => {
