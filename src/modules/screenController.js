@@ -1,7 +1,7 @@
 import Projects from "./projects";
 import taskController from "./taskController";
 import ToDo from "./toDo";
-import toDoComponent from "./toDoComponent";
+import generateTaskComponent from "./toDoComponent";
 import toDoFormComponent from "./toDoFormComponent";
 import projectComponent from "./projectComponent";
 
@@ -16,6 +16,9 @@ const screenController = () => {
   const thisWeeksFolder = document.querySelector('[data-folder="This Week"]');
   const tasksContainer = document.querySelector(".tasks");
   const taskForm = document.querySelector(".task-form");
+  const projectForm = document.getElementById("projectForm");
+  const projectAddBtn = document.getElementById("addProjectBtn");
+  const cancelProjectFormBtn = document.querySelector(".cancel-project-btn");
   let currentProject = Projects.getProject("Inbox");
   let activeTask;
 
@@ -26,19 +29,9 @@ const screenController = () => {
     "This Week": taskController.getThisWeeksTasks(),
   });
 
-  const generateNewTaskComponent = (task) => {
-    const taskContainer = toDoComponent(
-      task.title,
-      task.dueDate,
-      task.priority,
-      task.status,
-      task.id
-    );
-    return taskContainer;
-  };
-
   const renderTask = (task) => {
-    tasksContainer.appendChild(generateNewTaskComponent(task));
+    const taskComponent = generateTaskComponent(task);
+    tasksContainer.appendChild(taskComponent);
   };
 
   const renderAllTasks = () => {
@@ -77,7 +70,7 @@ const screenController = () => {
       activeTask.changePriority(e.target.priority.value);
       activeTask.changeTitle(e.target.taskTitle.value);
       activeTask.changeDueDate(e.target.dueDate.valueAsDate);
-      const taskContainer = generateNewTaskComponent(activeTask);
+      const taskContainer = generateTaskComponent(activeTask);
       e.target.replaceWith(taskContainer);
     }
   };
@@ -247,6 +240,28 @@ const screenController = () => {
       }
     }
   });
+  projectAddBtn.addEventListener("click", toggleProjectForm);
+
+  projectForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const newProjectTitle = projectForm.projectInput.value;
+    const newProjectComponent = projectComponent(newProjectTitle);
+    Projects.addProject(newProjectTitle);
+    projectsContainer.appendChild(newProjectComponent);
+
+    projectForm.reset();
+    toggleProjectForm();
+  });
+
+  cancelProjectFormBtn.addEventListener("click", () => {
+    projectForm.reset();
+    toggleProjectForm();
+  });
+
+  function toggleProjectForm() {
+    const ProjectFormDisplay = window.getComputedStyle(projectForm).display;
+    projectForm.style.display = ProjectFormDisplay === "none" ? "flex" : "none";
+  }
 };
 
 export default screenController;
