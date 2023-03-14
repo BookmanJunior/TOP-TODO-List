@@ -2,7 +2,7 @@ import Projects from "./projects";
 import taskController from "./taskController";
 import ToDo from "./toDo";
 import generateTaskComponent from "./toDoComponent";
-import toDoFormComponent from "./toDoFormComponent";
+import generateToDoFromComponent from "./toDoFormComponent";
 import { projectComponent, editProjectComponent } from "./projectComponent";
 
 const screenController = () => {
@@ -73,19 +73,16 @@ const screenController = () => {
   };
 
   const editTask = (e) => {
-    if (e.target.matches(".edit-btn")) {
-      const taskElement = e.target.closest(".task");
-      const tasksProject = Projects.getTasksProject(
-        taskElement.getAttribute("data-id")
-      );
-      const task = tasksProject.getTask(taskElement.getAttribute("data-id"));
-      activeTask = task;
-      const toDoForm = toDoFormComponent();
-      toDoForm.priority.value = task.priority;
-      toDoForm.taskTitle.value = task.title;
-      toDoForm.dueDate.valueAsDate = new Date(task.dueDate);
-      taskElement.replaceWith(toDoForm);
-    }
+    const taskElement = e.target.closest(".task");
+    const taskId = taskElement.getAttribute("data-id");
+    const tasksProject = Projects.getTasksProject(taskId);
+
+    const task = tasksProject.getTask(taskId);
+    activeTask = task;
+
+    // replace task with task edit form
+    const toDoEditForm = generateToDoFromComponent(activeTask);
+    taskElement.replaceWith(toDoEditForm);
   };
 
   const saveEditedTask = (e) => {
@@ -228,6 +225,11 @@ const screenController = () => {
   tasksContainer.addEventListener("submit", saveEditedTask);
   tasksContainer.addEventListener("click", (e) => {
     if (e.target.matches(".edit-btn")) {
+      // check for existing task edit form
+      const formExist = document.querySelector(".edit-form");
+      if (formExist) {
+        formExist.replaceWith(generateTaskComponent(activeTask));
+      }
       editTask(e);
     }
   });
