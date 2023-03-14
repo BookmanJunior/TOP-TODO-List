@@ -1,4 +1,13 @@
-export default function toDoFormComponent() {
+export default function generateToDoFromComponent(task) {
+  const toDoEditForm = toDoFormComponent();
+  toDoEditForm.priority.value = task.priority;
+  toDoEditForm.taskTitle.value = task.title;
+  toDoEditForm.dueDate.valueAsDate = new Date(task.dueDate);
+
+  return toDoEditForm;
+}
+
+function toDoFormComponent() {
   const taskForm = document.createElement("form");
 
   taskForm.classList.add("edit-form");
