@@ -1,6 +1,16 @@
 import format from "date-fns/format";
 
-export default function toDoComponent(title, dueDate, priority, status, id) {
+export default function generateTaskComponent(task) {
+  const taskComponent = toDoComponent(
+    task.title,
+    task.dueDate,
+    task.priority,
+    task.status,
+    task.id
+  );
+  return taskComponent;
+}
+function toDoComponent(title, dueDate, priority, status, id) {
   const task = document.createElement("div");
 
   task.classList.add("task");
