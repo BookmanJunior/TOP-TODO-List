@@ -1,4 +1,4 @@
-export default function projectComponent(projectTitle) {
+function projectComponent(projectTitle) {
   const li = document.createElement("li");
   const title = document.createElement("span");
   const taskCounter = document.createElement("span");
@@ -24,3 +24,25 @@ export default function projectComponent(projectTitle) {
 
   return li;
 }
+
+function editProjectComponent(projectTitle) {
+  const container = document.createElement("div");
+  const textInput = document.createElement("input");
+  const saveBtn = document.createElement("button");
+  const cancelBtn = document.createElement("button");
+
+  container.classList.add("edit-project-form");
+  textInput.value = projectTitle;
+  saveBtn.textContent = "Save";
+  cancelBtn.textContent = "Cancel";
+
+  textInput.classList.add("edit-project-title");
+  saveBtn.classList.add("save-project-change");
+  cancelBtn.classList.add("cancel-project-change");
+
+  container.append(textInput, saveBtn, cancelBtn);
+
+  return container;
+}
+
+export { projectComponent, editProjectComponent };
