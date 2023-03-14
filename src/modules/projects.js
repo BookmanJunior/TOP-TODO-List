@@ -20,7 +20,8 @@ export default class Projects {
   static #projectsList = [inbox, work, school];
 
   static addProject(project) {
-    this.#projectsList.push(project);
+    const newProject = Project(project);
+    this.#projectsList.push(newProject);
   }
 
   static removeProject(project) {
