@@ -53,13 +53,15 @@ function taskTitleElement(title) {
   return taskTitle;
 }
 
-function dueDateElement(dueDate) {
+function dueDateElement(dueDate = "") {
   const dateComponent = document.createElement("span");
 
   dateComponent.classList.add("due-date");
 
   // convert to readable date
-  dateComponent.textContent = format(new Date(dueDate), "MMM do");
+  dateComponent.textContent = dueDate
+    ? format(new Date(dueDate), "MMM do")
+    : "No Due Date";
 
   return dateComponent;
 }
