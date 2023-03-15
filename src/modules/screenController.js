@@ -136,6 +136,17 @@ const screenController = () => {
     );
   };
 
+  const addProject = (e) => {
+    e.preventDefault();
+    const newProjectTitle = projectForm.projectInput.value;
+    const newProjectComponent = projectComponent(newProjectTitle);
+    Projects.addProject(newProjectTitle);
+    projectsContainer.appendChild(newProjectComponent);
+
+    projectForm.reset();
+    toggleProjectForm();
+  };
+
   const changeActiveLink = (e) => {
     const linkContainer = e.target.closest("li");
     const currentActiveLink = document.querySelector(".active");
@@ -209,15 +220,9 @@ const screenController = () => {
     }
   });
 
-  inboxFolder.addEventListener("click", (e) => {
-    switchProject(e);
-  });
-  completedTasksFolder.addEventListener("click", (e) => {
-    switchFolder(e);
-  });
-  todayFolder.addEventListener("click", (e) => {
-    switchFolder(e);
-  });
+  inboxFolder.addEventListener("click", switchProject);
+  completedTasksFolder.addEventListener("click", switchFolder);
+  todayFolder.addEventListener("click", switchFolder);
   thisWeeksFolder.addEventListener("click", (e) => {
     switchFolder(e);
   });
@@ -260,16 +265,7 @@ const screenController = () => {
   });
   projectAddBtn.addEventListener("click", toggleProjectForm);
 
-  projectForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const newProjectTitle = projectForm.projectInput.value;
-    const newProjectComponent = projectComponent(newProjectTitle);
-    Projects.addProject(newProjectTitle);
-    projectsContainer.appendChild(newProjectComponent);
-
-    projectForm.reset();
-    toggleProjectForm();
-  });
+  projectForm.addEventListener("submit", addProject);
 
   cancelProjectFormBtn.addEventListener("click", () => {
     projectForm.reset();
@@ -279,7 +275,12 @@ const screenController = () => {
   projectsContainer.addEventListener("click", (e) => {
     if (e.target.matches(".edit-btn")) {
       // remove previous edit form
-      editFormExist("edit-project-form");
+      const editFormExists = document.querySelector(`.edit-project-form`);
+
+      if (editFormExists) {
+        editFormExists.replaceWith(currentEditProject.title);
+      }
+
       editUserProject(e);
     }
   });
@@ -301,13 +302,6 @@ const screenController = () => {
   function toggleProjectForm() {
     const ProjectFormDisplay = window.getComputedStyle(projectForm).display;
     projectForm.style.display = ProjectFormDisplay === "none" ? "flex" : "none";
-  }
-
-  function editFormExist(editFormClass) {
-    const editFormExists = document.querySelector(`.${editFormClass}`);
-    if (editFormExists) {
-      editFormExists.replaceWith(projectComponent(currentEditProject.title));
-    }
   }
 };
 
