@@ -26,16 +26,20 @@ function projectComponent(projectTitle) {
 }
 
 function editProjectComponent(projectTitle) {
-  const container = document.createElement("div");
+  const container = document.createElement("form");
   const textInput = document.createElement("input");
-  const saveBtn = document.createElement("button");
-  const cancelBtn = document.createElement("button");
+  const saveBtn = document.createElement("input");
+  const cancelBtn = document.createElement("input");
+
+  saveBtn.type = "submit";
+  cancelBtn.type = "button";
 
   container.classList.add("edit-project-form");
   textInput.value = projectTitle;
-  saveBtn.textContent = "Save";
-  cancelBtn.textContent = "Cancel";
+  saveBtn.value = "Save";
+  cancelBtn.value = "Cancel";
 
+  textInput.id = "newProjectTitle";
   textInput.classList.add("edit-project-title");
   saveBtn.classList.add("save-project-change");
   cancelBtn.classList.add("cancel-project-change");
