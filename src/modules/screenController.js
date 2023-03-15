@@ -136,6 +136,13 @@ const screenController = () => {
     );
   };
 
+  const saveEditedProject = (e) => {
+    e.preventDefault();
+    const projectEditForm = document.querySelector(".edit-project-form");
+    currentEditProject.title = projectEditForm.newProjectTitle.value;
+    refreshUserProjects();
+  };
+
   const addProject = (e) => {
     e.preventDefault();
     const newProjectTitle = projectForm.projectInput.value;
@@ -264,14 +271,17 @@ const screenController = () => {
     }
   });
   projectAddBtn.addEventListener("click", toggleProjectForm);
-
   projectForm.addEventListener("submit", addProject);
-
   cancelProjectFormBtn.addEventListener("click", () => {
     projectForm.reset();
     toggleProjectForm();
   });
-
+  projectsContainer.addEventListener("submit", saveEditedProject);
+  projectsContainer.addEventListener("click", (e) => {
+    if (e.target.matches(".cancel-project-change")) {
+      refreshUserProjects();
+    }
+  });
   projectsContainer.addEventListener("click", (e) => {
     if (e.target.matches(".edit-btn")) {
       // remove previous edit form
@@ -282,20 +292,6 @@ const screenController = () => {
       }
 
       editUserProject(e);
-    }
-  });
-
-  projectsContainer.addEventListener("click", (e) => {
-    const projectInput = document.querySelector(".edit-project-title");
-
-    if (e.target.matches(".save-project-change")) {
-      currentEditProject.title = projectInput.value;
-      refreshUserProjects();
-      return;
-    }
-
-    if (e.target.matches(".cancel-project-change")) {
-      refreshUserProjects();
     }
   });
 
