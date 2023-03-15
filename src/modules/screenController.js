@@ -20,7 +20,6 @@ const screenController = () => {
   const projectAddBtn = document.getElementById("addProjectBtn");
   const cancelProjectFormBtn = document.querySelector(".cancel-project-btn");
   let currentProject = Projects.getProject("Inbox");
-  let currentEditProject;
   let activeTask;
 
   const defaultFolderFunctions = () => ({
@@ -130,17 +129,21 @@ const screenController = () => {
     const projectContainer = e.target.closest(".project");
     const projectTitle =
       projectContainer.firstElementChild.getAttribute("data-project");
-    currentEditProject = Projects.getProject(projectTitle);
-    projectContainer.replaceWith(
-      editProjectComponent(currentEditProject.title)
-    );
+    currentProject = Projects.getProject(projectTitle);
+    const newTaskForm = editProjectComponent(currentProject.title);
+
+    projectContainer.style.display = "none";
+    projectContainer.insertAdjacentElement("afterend", newTaskForm);
+
+    switchLink(currentProject.title);
   };
 
   const saveEditedProject = (e) => {
     e.preventDefault();
     const projectEditForm = document.querySelector(".edit-project-form");
-    currentEditProject.title = projectEditForm.newProjectTitle.value;
+    currentProject.title = projectEditForm.newProjectTitle.value;
     refreshUserProjects();
+    switchLink(currentProject.title);
   };
 
   const addProject = (e) => {
@@ -152,49 +155,7 @@ const screenController = () => {
 
     projectForm.reset();
     toggleProjectForm();
-  };
-
-  const changeActiveLink = (e) => {
-    const linkContainer = e.target.closest("li");
-    const currentActiveLink = document.querySelector(".active");
-
-    // reset active link to inbox if current active project was deleted
-    if (currentActiveLink === null) {
-      inboxFolder.closest("li").classList.add("active");
-      return;
-    }
-
-    currentActiveLink.classList.remove("active");
-    linkContainer.classList.add("active");
-  };
-
-  const switchProject = (e) => {
-    const projectContainer = e.target.closest(".project");
-
-    // return if active link is clicked
-    if (projectContainer.classList.contains("active")) {
-      return;
-    }
-
-    taskForm.style.display = "flex";
-    const selectedProject = e.target.getAttribute("data-project") ?? "Inbox";
-    currentProject = Projects.getProject(selectedProject);
-    refreshTasks();
-    changeActiveLink(e);
-  };
-
-  const switchFolder = (e) => {
-    const currentFolder = e.target.closest(".menu-link");
-
-    if (currentFolder.classList.contains("active")) {
-      return;
-    }
-
-    taskForm.style.display = "none";
-    currentProject =
-      currentFolder.firstElementChild.getAttribute("data-folder");
-    refreshTasks();
-    changeActiveLink(e);
+    switchLink(newProjectTitle);
   };
 
   const removeProject = (e) => {
@@ -207,8 +168,8 @@ const screenController = () => {
 
     // switch to default Inbox folder if active project was deleted
     if (parentContainer.classList.contains("active")) {
-      e.target.closest("li").classList.remove("active");
-      switchProject(e);
+      currentProject = Projects.getProject("Inbox");
+      switchLink(currentProject.title);
     }
   };
 
@@ -217,7 +178,7 @@ const screenController = () => {
 
   mainNav.addEventListener("click", (e) => {
     if (e.target.matches(".project-title")) {
-      switchProject(e);
+      switchLinkOnClick(e);
     }
   });
   mainNav.addEventListener("click", (e) => {
@@ -227,12 +188,10 @@ const screenController = () => {
     }
   });
 
-  inboxFolder.addEventListener("click", switchProject);
-  completedTasksFolder.addEventListener("click", switchFolder);
-  todayFolder.addEventListener("click", switchFolder);
-  thisWeeksFolder.addEventListener("click", (e) => {
-    switchFolder(e);
-  });
+  inboxFolder.addEventListener("click", switchLinkOnClick);
+  completedTasksFolder.addEventListener("click", switchLinkOnClick);
+  todayFolder.addEventListener("click", switchLinkOnClick);
+  thisWeeksFolder.addEventListener("click", switchLinkOnClick);
   taskForm.addEventListener("submit", generateNewTask);
   tasksContainer.addEventListener("submit", saveEditedTask);
   tasksContainer.addEventListener("click", (e) => {
@@ -288,12 +247,50 @@ const screenController = () => {
       const editFormExists = document.querySelector(`.edit-project-form`);
 
       if (editFormExists) {
-        editFormExists.replaceWith(currentEditProject.title);
+        editFormExists.replaceWith(projectComponent(currentProject.title));
       }
 
       editUserProject(e);
     }
   });
+
+  function switchLink(linkTitle) {
+    currentProject = Projects.getProject(linkTitle) ?? linkTitle;
+    refreshTasks();
+    changeActiveLink();
+  }
+
+  function switchLinkOnClick(e) {
+    const linkContainer = e.target.closest("li");
+    const linkTitle = linkContainer.firstElementChild.textContent;
+    // close edit form on another project click
+    const editFormExists = document.querySelector(`.edit-project-form`);
+    if (editFormExists) {
+      refreshUserProjects();
+    }
+
+    // return if active link is clicked
+    if (linkContainer.classList.contains("active")) {
+      return;
+    }
+
+    currentProject = Projects.getProject(linkTitle) ?? linkTitle;
+    refreshTasks();
+    changeActiveLink();
+  }
+
+  function changeActiveLink() {
+    const currentProjectContainer =
+      document.querySelector(`[data-folder='${currentProject}']`) ??
+      document.querySelector(`[data-project='${currentProject.title}']`);
+    const currentActiveLink = document.querySelector(".active");
+
+    if (currentActiveLink) {
+      currentActiveLink.classList.remove("active");
+    }
+
+    currentProjectContainer.closest("li").classList.add("active");
+  }
 
   function toggleProjectForm() {
     const ProjectFormDisplay = window.getComputedStyle(projectForm).display;
