@@ -20,7 +20,9 @@ const screenController = () => {
   const projectAddBtn = document.getElementById("addProjectBtn");
   const cancelProjectFormBtn = document.querySelector(".cancel-project-btn");
   let currentProject = Projects.getProject("Inbox");
-  let activeTask;
+  let currentTask;
+
+  Projects.loadLocalData();
 
   const defaultFolderFunctions = () => ({
     Inbox: taskController.getAllTasks(),
@@ -77,21 +79,22 @@ const screenController = () => {
     const tasksProject = Projects.getTasksProject(taskId);
 
     const task = tasksProject.getTask(taskId);
-    activeTask = task;
+    currentTask = task;
 
     // replace task with task edit form
-    const toDoEditForm = generateToDoFromComponent(activeTask);
+    const toDoEditForm = generateToDoFromComponent(currentTask);
     taskElement.replaceWith(toDoEditForm);
   };
 
   const saveEditedTask = (e) => {
     e.preventDefault();
     if (e.target.matches(".edit-form")) {
-      activeTask.changePriority(e.target.priority.value);
-      activeTask.changeTitle(e.target.taskTitle.value);
-      activeTask.changeDueDate(e.target.dueDate.valueAsDate);
-      const taskContainer = generateTaskComponent(activeTask);
+      currentTask.changePriority(e.target.priority.value);
+      currentTask.changeTitle(e.target.taskTitle.value);
+      currentTask.changeDueDate(e.target.dueDate.valueAsDate);
+      const taskContainer = generateTaskComponent(currentTask);
       e.target.replaceWith(taskContainer);
+      updateLocalData();
     }
   };
 
@@ -104,6 +107,7 @@ const screenController = () => {
     );
     renderTask(newTask);
     currentProject.addTask(newTask);
+    updateLocalData();
     taskForm.reset();
   };
 
@@ -143,6 +147,7 @@ const screenController = () => {
     const projectEditForm = document.querySelector(".edit-project-form");
     currentProject.title = projectEditForm.newProjectTitle.value;
     refreshUserProjects();
+    updateLocalData();
     switchLink(currentProject.title);
   };
 
@@ -155,6 +160,7 @@ const screenController = () => {
 
     projectForm.reset();
     toggleProjectForm();
+    updateLocalData();
     switchLink(newProjectTitle);
   };
 
@@ -164,6 +170,7 @@ const screenController = () => {
       parentContainer.firstChild.getAttribute("data-project");
 
     Projects.removeProject(projectsTitle);
+    updateLocalData();
     parentContainer.remove();
 
     // switch to default Inbox folder if active project was deleted
@@ -199,7 +206,7 @@ const screenController = () => {
       // check for existing task edit form
       const formExist = document.querySelector(".edit-form");
       if (formExist) {
-        formExist.replaceWith(generateTaskComponent(activeTask));
+        formExist.replaceWith(generateTaskComponent(currentTask));
       }
       editTask(e);
     }
@@ -219,12 +226,12 @@ const screenController = () => {
       const taskContainer = e.target.closest(".task");
       const tasksId = taskContainer.getAttribute("data-id");
       const tasksProject = Projects.getTasksProject(tasksId);
-      const currentTask = tasksProject.getTask(tasksId);
+      const activeTask = tasksProject.getTask(tasksId);
 
       if (e.target.checked) {
-        currentTask.changeStatus("checked");
+        activeTask.changeStatus("checked");
       } else {
-        currentTask.changeStatus("unchecked");
+        activeTask.changeStatus("unchecked");
         refreshTasks();
       }
     }
@@ -295,6 +302,10 @@ const screenController = () => {
   function toggleProjectForm() {
     const ProjectFormDisplay = window.getComputedStyle(projectForm).display;
     projectForm.style.display = ProjectFormDisplay === "none" ? "flex" : "none";
+  }
+
+  function updateLocalData() {
+    localStorage.setItem("projects", JSON.stringify(Projects.list));
   }
 };
 
