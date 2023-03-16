@@ -19,6 +19,27 @@ school.addTask(test3);
 export default class Projects {
   static #projectsList = [inbox, work, school];
 
+  static loadLocalData() {
+    const localData = JSON.parse(localStorage.getItem("projects"));
+    if (localData) {
+      this.#projectsList = [];
+      let currentProjectsTasks = [];
+      localData.forEach((project) => {
+        currentProjectsTasks = project.tasks;
+        const newProject = Project(project.title);
+        currentProjectsTasks.forEach((task) => {
+          newProject.addTask(
+            ToDo(task.title, task.dueDate, task.priority, task.status, task.id)
+          );
+        });
+        this.#projectsList.push(newProject);
+      });
+      return this.#projectsList;
+    }
+    localStorage.setItem("projects", JSON.stringify(this.#projectsList));
+    return this.#projectsList;
+  }
+
   static addProject(project) {
     const newProject = Project(project);
     this.#projectsList.push(newProject);
