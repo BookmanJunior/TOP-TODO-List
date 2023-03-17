@@ -33,37 +33,55 @@
             <span class="task-counter"></span>
           </li>
         </ul>
-        <h2>Projects</h2>
-        <ul class="projects" id="projects"></ul>
-        <button class="add-project-btn" id="addProjectBtn">
-          + Add Project
-        </button>
-        <form class="project-form" id="projectForm">
-          <input
-            type="text"
-            id="projectInput"
-            class="project-input"
-            placeholder="Project Title"
-            required
-          />
-          <div class="project-form-btns">
-            <input type="Submit" class="project-form-add-btn" value="Add" />
+        <div class="projects-container">
+          <h2>Projects</h2>
+          <ul class="projects" id="projects"></ul>
+          <button class="add-project-btn" id="addProjectBtn">
+            + Add Project
+          </button>
+          <form class="project-form" id="projectForm">
             <input
-              type="button"
-              class="cancel-project-btn"
-              value="Cancel"
-              formnovalidate
+              type="text"
+              id="projectInput"
+              class="project-input"
+              placeholder="Project Title"
+              required
             />
-          </div>
-        </form>
+            <div class="btn-container">
+              <input type="Submit" class="project-form-add-btn" value="Add" />
+              <input
+                type="button"
+                class="cancel-project-btn"
+                value="Cancel"
+                formnovalidate
+              />
+            </div>
+          </form>
+        </div>
       </nav>
       <div class="tasks-container" id="tasksContainer">
         <form class="task-form">
           <div class="left-wrapper">
             <div class="priority-btns">
-              <input type="radio" name="priority" value="high" required />
-              <input type="radio" name="priority" value="medium" />
-              <input type="radio" name="priority" value="low" />
+              <input
+                type="radio"
+                name="priority"
+                value="high"
+                class="high-priority"
+                required
+              />
+              <input
+                type="radio"
+                name="priority"
+                value="medium"
+                class="medium-priority"
+              />
+              <input
+                type="radio"
+                name="priority"
+                value="low"
+                class="low-priority"
+              />
             </div>
             <input
               type="text"
