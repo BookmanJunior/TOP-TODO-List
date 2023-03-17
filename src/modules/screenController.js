@@ -139,7 +139,13 @@ const screenController = () => {
   const saveEditedProject = (e) => {
     e.preventDefault();
     const projectEditForm = document.querySelector(".edit-project-form");
-    currentProject.title = projectEditForm.newProjectTitle.value;
+    const projectEditFormValue = projectEditForm.newProjectTitle.value;
+
+    if (Projects.checkForDuplicateProjects(projectEditFormValue)) {
+      return;
+    }
+
+    currentProject.title = projectEditFormValue;
     refreshUserProjects();
     updateLocalData();
     switchLink(currentProject.title);
@@ -148,6 +154,11 @@ const screenController = () => {
   const addProject = (e) => {
     e.preventDefault();
     const newProjectTitle = projectForm.projectInput.value;
+
+    if (Projects.checkForDuplicateProjects(newProjectTitle)) {
+      return;
+    }
+
     const newProjectComponent = projectComponent(newProjectTitle);
     Projects.addProject(newProjectTitle);
     projectsContainer.appendChild(newProjectComponent);
@@ -240,6 +251,7 @@ const screenController = () => {
   projectsContainer.addEventListener("click", (e) => {
     if (e.target.matches(".cancel-project-change")) {
       refreshUserProjects();
+      switchLink(currentProject.title);
     }
   });
   projectsContainer.addEventListener("click", (e) => {
