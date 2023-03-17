@@ -1,7 +1,7 @@
 export default function generateToDoFromComponent(task) {
   const toDoEditForm = toDoFormComponent();
   toDoEditForm.priority.value = task.priority;
-  toDoEditForm.taskTitle.value = task.title;
+  toDoEditForm.newTaskTitle.value = task.title;
   toDoEditForm.dueDate.valueAsDate = new Date(task.dueDate);
 
   return toDoEditForm;
@@ -64,7 +64,7 @@ function taskNameField() {
   const taskNameInput = document.createElement("input");
   taskNameInput.type = "text";
   taskNameInput.name = "task-title";
-  taskNameInput.id = "taskTitle";
+  taskNameInput.id = "newTaskTitle";
   taskNameInput.placeholder = "What is your next task?";
   taskNameInput.required = "true";
 
