@@ -22,8 +22,6 @@ const screenController = () => {
   let currentProject = Projects.getProject("Inbox");
   let currentTask;
 
-  Projects.loadLocalData();
-
   const defaultFolderFunctions = () => ({
     Inbox: taskController.getAllTasks(),
     Today: taskController.getTodaysTasks(),
@@ -48,6 +46,7 @@ const screenController = () => {
     const selectedProject = Projects.getTasksProject(tasksId);
     parentContainer.remove();
     selectedProject.removeTask(tasksId);
+    updateLocalData();
   };
 
   const refreshTasks = () => {
@@ -124,11 +123,6 @@ const screenController = () => {
     renderUserProjects();
   };
 
-  const render = () => {
-    renderAllTasks();
-    renderUserProjects();
-  };
-
   const editUserProject = (e) => {
     const projectContainer = e.target.closest(".project");
     const projectTitle =
@@ -181,7 +175,7 @@ const screenController = () => {
   };
 
   // Event Listeners
-  window.addEventListener("load", render);
+  window.addEventListener("load", init);
 
   mainNav.addEventListener("click", (e) => {
     if (e.target.matches(".project-title")) {
@@ -302,6 +296,12 @@ const screenController = () => {
   function toggleProjectForm() {
     const ProjectFormDisplay = window.getComputedStyle(projectForm).display;
     projectForm.style.display = ProjectFormDisplay === "none" ? "flex" : "none";
+  }
+
+  function init() {
+    Projects.checkLocalData();
+    renderAllTasks();
+    renderUserProjects();
   }
 
   function updateLocalData() {
