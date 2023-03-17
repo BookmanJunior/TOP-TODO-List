@@ -72,7 +72,7 @@ export default class Projects {
 
   static checkForDuplicateProjects(newProjectTitle) {
     return this.#projectsList.some(
-      (project) => project.title === newProjectTitle
+      (project) => project.title.toLowerCase() === newProjectTitle.toLowerCase()
     );
   }
 
