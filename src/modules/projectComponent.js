@@ -28,9 +28,11 @@ function projectComponent(projectTitle) {
 function editProjectComponent(projectTitle) {
   const container = document.createElement("form");
   const textInput = document.createElement("input");
+  const btnContainer = document.createElement("div");
   const saveBtn = document.createElement("input");
   const cancelBtn = document.createElement("input");
 
+  textInput.type = "text";
   saveBtn.type = "submit";
   cancelBtn.type = "button";
 
@@ -41,10 +43,12 @@ function editProjectComponent(projectTitle) {
 
   textInput.id = "newProjectTitle";
   textInput.classList.add("edit-project-title");
+  btnContainer.classList.add("btn-container");
   saveBtn.classList.add("save-project-change");
   cancelBtn.classList.add("cancel-project-change");
 
-  container.append(textInput, saveBtn, cancelBtn);
+  btnContainer.append(saveBtn, cancelBtn);
+  container.append(textInput, btnContainer);
 
   return container;
 }
