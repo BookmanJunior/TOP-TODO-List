@@ -216,6 +216,7 @@ const screenController = () => {
       }
       editTask(e);
       focusInputElement("newTaskTitle");
+      projectForm.style.display = "none";
     }
   });
   tasksContainer.addEventListener("click", (e) => {
@@ -244,6 +245,8 @@ const screenController = () => {
     }
   });
   projectAddBtn.addEventListener("click", () => {
+    refreshUserProjects();
+    switchLink(currentProject.title);
     toggleProjectForm();
     focusInputElement("projectInput");
   });
@@ -269,6 +272,7 @@ const screenController = () => {
       }
 
       editUserProject(e);
+      projectForm.style.display = "none";
     }
   });
 
