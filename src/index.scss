@@ -16,6 +16,12 @@ $primary-font-clr: #717082;
   outline: none;
 }
 
+@mixin vertical-flex($gapValue) {
+  display: flex;
+  flex-direction: column;
+  gap: $gapValue
+}
+
 // modern css reset
 /*
   1. Use a more-intuitive box-sizing model.
@@ -87,8 +93,6 @@ body {
   color: $primary-font-clr;
 }
 
-
-
 input:not([type="text"]),
 button {
   cursor: pointer;
@@ -98,5 +102,71 @@ input,
 button
  {
   @include reset-default-appearance();
-  color: inherit;
+  color: $primary-font-clr;
  }
+
+ // Nav section
+
+nav {
+  @include vertical-flex(5em);
+  background-color: $clr-primary;
+  padding: 3em;
+
+  ul {
+    @include vertical-flex(1em);
+    list-style: none;
+
+    li {
+      display: flex;
+      justify-content: space-between;
+  
+      &.active {
+        color: $clr-accent;
+      }
+
+      span:first-child {
+        font-weight: 600;
+        cursor: pointer;
+  
+        &:hover {
+          color: $clr-accent
+        }
+      }
+  
+    }
+  }
+}
+
+.projects-container {
+  @include vertical-flex(1em);
+  gap: 1em;
+
+  .add-project-btn {
+    align-self: start;
+  }
+
+  .project-form {
+    display: none;
+  }
+
+  .btn-container {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+
+    & *:hover {
+      color: $clr-accent;
+    }
+  }
+
+  .add-project-btn:hover {
+    color: $clr-accent;
+  }
+}
+
+.edit-project-title,
+.project-input {
+  border: 1px solid $clr-accent;
+  border-radius: 4px;
+  padding: 5px;
+}
