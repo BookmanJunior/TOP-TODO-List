@@ -7,7 +7,14 @@ $high-priority-clr: #fd99af;
 $mid-priority-clr: #fac608;
 $low-priority-clr: #3fd4f4;
 $primary-font: "Poppins", sans-serif;
-$font-clr: #717082;
+$primary-font-clr: #717082;
+
+@mixin reset-default-appearance {
+  appearance: none;
+  border: none;
+  background-color: transparent;
+  outline: none;
+}
 
 // modern css reset
 /*
@@ -64,3 +71,32 @@ p, h1, h2, h3, h4, h5, h6 {
 #root, #__next {
   isolation: isolate;
 }
+
+// General section
+
+body {
+  background-color: $clr-accent;
+  height: 100vh;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  height: 100vh;
+  font-family: $primary-font;
+  color: $primary-font-clr;
+}
+
+
+
+input:not([type="text"]),
+button {
+  cursor: pointer;
+}
+
+input,
+button
+ {
+  @include reset-default-appearance();
+  color: inherit;
+ }
