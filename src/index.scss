@@ -16,10 +16,13 @@ $primary-font-clr: #717082;
   outline: none;
 }
 
-@mixin vertical-flex($gapValue) {
+@mixin flex($gapValue, $vertical: false) {
   display: flex;
-  flex-direction: column;
-  gap: $gapValue
+  gap: $gapValue;
+
+  @if $vertical {
+    flex-direction: column;
+  }
 }
 
 // modern css reset
@@ -108,12 +111,12 @@ button
  // Nav section
 
 nav {
-  @include vertical-flex(5em);
+  @include flex(5em, $vertical: true);
   background-color: $clr-primary;
   padding: 3em;
 
   ul {
-    @include vertical-flex(1em);
+    @include flex(1em, $vertical: true);
     list-style: none;
 
     li {
@@ -138,7 +141,7 @@ nav {
 }
 
 .projects-container {
-  @include vertical-flex(1em);
+  @include flex(1em, $vertical: true);
   gap: 1em;
 
   .add-project-btn {
@@ -150,9 +153,8 @@ nav {
   }
 
   .btn-container {
-    display: flex;
+    @include flex(1em);
     justify-content: center;
-    gap: 1em;
 
     & *:hover {
       color: $clr-accent;
@@ -169,4 +171,61 @@ nav {
   border: 1px solid $clr-accent;
   border-radius: 4px;
   padding: 5px;
+}
+
+// Tasks section
+
+.tasks-container {
+  @include flex(1.5em, $vertical: true);
+  padding-block: 2rem;
+  overflow: auto;
+
+  .tasks {
+    @include flex(10px, $vertical: true);
+    align-items: center;
+  }
+
+  .task-form,
+  .task,
+  .edit-form {
+    @include flex(1em);
+    flex-wrap: wrap;
+    align-items: center;
+    align-self: center;
+    justify-content: space-between;
+    background-color: $clr-primary;
+    padding: 0.8em;
+    border-radius: 1em;
+
+    .left-wrapper,
+    .right-wrapper {
+      @include flex(10px);
+      align-items: center;
+    }
+
+    .priority-btns {
+      @include flex(5px)
+    }
+  }
+  
+  .task-form
+  {
+    width: 90%;
+    margin: 1em;
+  }
+
+  .task,
+  .edit-form {
+    width: 85%;
+  }
+}
+
+
+input:is([type="radio"], [type="checkbox"]) {
+  display: grid;
+  place-content: center;
+  height: 15px;
+  width: 15px;
+  border: 2px solid;
+  border-radius: 50%;
 }
