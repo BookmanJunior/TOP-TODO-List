@@ -70,6 +70,12 @@ export default class Projects {
     );
   }
 
+  static checkForDuplicateProjects(newProjectTitle) {
+    return this.#projectsList.some(
+      (project) => project.title === newProjectTitle
+    );
+  }
+
   static get list() {
     return this.#projectsList;
   }
