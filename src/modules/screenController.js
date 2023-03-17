@@ -89,7 +89,7 @@ const screenController = () => {
     e.preventDefault();
     if (e.target.matches(".edit-form")) {
       currentTask.changePriority(e.target.priority.value);
-      currentTask.changeTitle(e.target.taskTitle.value);
+      currentTask.changeTitle(e.target.newTaskTitle.value);
       currentTask.changeDueDate(e.target.dueDate.valueAsDate);
       const taskContainer = generateTaskComponent(currentTask);
       e.target.replaceWith(taskContainer);
@@ -133,6 +133,7 @@ const screenController = () => {
     projectContainer.style.display = "none";
     projectContainer.insertAdjacentElement("afterend", newTaskForm);
 
+    focusInputElement("newProjectTitle");
     switchLink(currentProject.title);
   };
 
@@ -214,6 +215,7 @@ const screenController = () => {
         formExist.replaceWith(generateTaskComponent(currentTask));
       }
       editTask(e);
+      focusInputElement("newTaskTitle");
     }
   });
   tasksContainer.addEventListener("click", (e) => {
@@ -241,7 +243,10 @@ const screenController = () => {
       }
     }
   });
-  projectAddBtn.addEventListener("click", toggleProjectForm);
+  projectAddBtn.addEventListener("click", () => {
+    toggleProjectForm();
+    focusInputElement("projectInput");
+  });
   projectForm.addEventListener("submit", addProject);
   cancelProjectFormBtn.addEventListener("click", () => {
     projectForm.reset();
@@ -318,6 +323,11 @@ const screenController = () => {
 
   function updateLocalData() {
     localStorage.setItem("projects", JSON.stringify(Projects.list));
+  }
+
+  function focusInputElement(element) {
+    const el = document.getElementById(element);
+    el.focus();
   }
 };
 
