@@ -76,7 +76,6 @@ function datePicker() {
   date.type = "date";
   date.name = "due-date";
   date.id = "dueDate";
-  date.required = "true";
 
   return date;
 }
