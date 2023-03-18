@@ -55,6 +55,7 @@ function priorityBtn(priority) {
   radioBtn.type = "radio";
   radioBtn.name = "priority";
   radioBtn.value = priority;
+  radioBtn.classList.add(`${priority}-priority`);
   radioBtn.required = "true";
 
   return { radioBtn };
