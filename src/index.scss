@@ -197,6 +197,11 @@ nav {
     padding: 0.8em;
     border-radius: 1em;
 
+    &:hover,
+    &:focus-within {
+    box-shadow: 0 5px 5px rgba(0, 0, 0, .3);
+    }
+
     .left-wrapper,
     .right-wrapper {
       @include flex(10px);
@@ -210,13 +215,18 @@ nav {
   
   .task-form
   {
-    width: 90%;
+    width: min(1000px, 95%);
     margin: 1em;
   }
 
   .task,
   .edit-form {
-    width: 85%;
+    width: min(900px, 95%);
+  }
+
+  .task-form,
+  .edit-form {
+    padding: 1em;
   }
 }
 
