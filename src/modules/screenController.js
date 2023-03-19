@@ -240,8 +240,11 @@ const screenController = () => {
         activeTask.changeStatus("checked");
       } else {
         activeTask.changeStatus("unchecked");
-        refreshTasks();
+        if (currentProject === "Completed") {
+          taskContainer.remove();
+        }
       }
+      updateLocalData();
     }
   });
   projectAddBtn.addEventListener("click", () => {
