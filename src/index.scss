@@ -235,6 +235,10 @@ input:is([type="radio"], [type="checkbox"]) {
   &.high-priority {
   border-color: $high-priority-clr;
 
+  &::after {
+    background-color: $high-priority-clr;
+  }
+
     &:checked::after {
       background-color: $high-priority-clr;
     }
@@ -243,6 +247,10 @@ input:is([type="radio"], [type="checkbox"]) {
   &.medium-priority {
     border-color: $mid-priority-clr;
 
+    &::after {
+      background-color: $mid-priority-clr;
+    }
+
     &:checked::after {
       background-color: $mid-priority-clr;
     }
@@ -250,6 +258,10 @@ input:is([type="radio"], [type="checkbox"]) {
   
   &.low-priority {
     border-color: $low-priority-clr;
+
+    &::after {
+      background-color: $low-priority-clr;
+    }
 
     &:checked::after { 
       background-color: $low-priority-clr;
