@@ -10,55 +10,100 @@
   </head>
   <body>
     <div class="container">
-      <nav class="main-nav" id="mainNav">
-        <ul class="menu-links">
-          <li class="menu-link project active">
-            <span class="menu-link-title" data-project="Inbox">Inbox</span>
-            <span class="task-counter">1</span>
-          </li>
-          <li class="menu-link">
-            <span class="menu-link-title" data-folder="Today">Today</span>
-            <span class="task-counter"></span>
-          </li>
-          <li class="menu-link">
-            <span class="menu-link-title" data-folder="This Week"
-              >This Week</span
-            >
-            <span class="task-counter"></span>
-          </li>
-          <li class="menu-link">
-            <span class="menu-link-title" data-folder="Completed"
-              >Completed</span
-            >
-            <span class="task-counter"></span>
-          </li>
-        </ul>
-        <div class="projects-container">
-          <h2>Projects</h2>
-          <ul class="projects" id="projects"></ul>
-          <button class="add-project-btn" id="addProjectBtn">
-            + Add Project
-          </button>
-          <form class="project-form" id="projectForm">
-            <input
-              type="text"
-              id="projectInput"
-              class="project-input"
-              placeholder="Project Title"
-              required
+      <header>
+        <button class="toggle-nav-btn">
+          <svg
+            viewBox="0 0 100 100"
+            width="40"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              class="line line-top"
+              width="80"
+              height="10"
+              rx="5"
+              x="10"
+              y="25"
             />
-            <div class="btn-container">
-              <input type="Submit" class="project-form-add-btn" value="Add" />
-              <input
-                type="button"
-                class="cancel-project-btn"
-                value="Cancel"
-                formnovalidate
-              />
+            <rect
+              class="line line-middle"
+              width="80"
+              height="10"
+              rx="5"
+              x="10"
+              y="45"
+            />
+            <rect
+              class="line line-bottom"
+              width="80"
+              height="10"
+              rx="5"
+              x="10"
+              y="65"
+            />
+          </svg>
+        </button>
+        <nav
+          class="main-nav"
+          id="mainNav"
+          aria-expanded="false"
+          aria-controls="links"
+        >
+          <div class="nav-wrapper">
+            <ul class="menu-links">
+              <li class="menu-link project active">
+                <span class="menu-link-title" data-project="Inbox">Inbox</span>
+                <span class="task-counter">1</span>
+              </li>
+              <li class="menu-link">
+                <span class="menu-link-title" data-folder="Today">Today</span>
+                <span class="task-counter"></span>
+              </li>
+              <li class="menu-link">
+                <span class="menu-link-title" data-folder="This Week"
+                  >This Week</span
+                >
+                <span class="task-counter"></span>
+              </li>
+              <li class="menu-link">
+                <span class="menu-link-title" data-folder="Completed"
+                  >Completed</span
+                >
+                <span class="task-counter"></span>
+              </li>
+            </ul>
+            <div class="projects-container">
+              <h2>Projects</h2>
+              <ul class="projects" id="projects"></ul>
+              <button class="add-project-btn" id="addProjectBtn">
+                + Add Project
+              </button>
+              <form class="project-form" id="projectForm">
+                <input
+                  type="text"
+                  id="projectInput"
+                  class="project-input"
+                  placeholder="Project Title"
+                  required
+                />
+                <div class="btn-container">
+                  <input
+                    type="Submit"
+                    class="project-form-add-btn"
+                    value="Add"
+                  />
+                  <input
+                    type="button"
+                    class="cancel-project-btn"
+                    value="Cancel"
+                    formnovalidate
+                  />
+                </div>
+              </form>
             </div>
-          </form>
-        </div>
-      </nav>
+          </div>
+        </nav>
+      </header>
       <div class="tasks-container" id="tasksContainer">
         <form class="task-form">
           <div class="left-wrapper">
