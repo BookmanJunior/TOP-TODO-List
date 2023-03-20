@@ -7,6 +7,7 @@ import { projectComponent, editProjectComponent } from "./projectComponent";
 
 const screenController = () => {
   const mainNav = document.getElementById("mainNav");
+  const toggleNavBtn = document.querySelector(".toggle-nav-btn");
   const projectsContainer = document.getElementById("projects");
   const inboxFolder = document.querySelector('[data-project="Inbox"]');
   const completedTasksFolder = document.querySelector(
@@ -110,11 +111,15 @@ const screenController = () => {
     taskForm.reset();
   };
 
+  const renderProject = (project) => {
+    projectsContainer.appendChild(projectComponent(project));
+  };
+
   const renderUserProjects = () => {
     // skip inbox project
     const allUserProjects = Projects.list.slice(1);
     allUserProjects.forEach((project) => {
-      projectsContainer.appendChild(projectComponent(project.title));
+      renderProject(project.title);
     });
   };
 
@@ -160,14 +165,12 @@ const screenController = () => {
       return;
     }
 
-    const newProjectComponent = projectComponent(newProjectTitle);
     Projects.addProject(newProjectTitle);
-    projectsContainer.appendChild(newProjectComponent);
-
+    updateLocalData();
+    renderProject(newProjectTitle);
+    switchLink(newProjectTitle);
     projectForm.reset();
     toggleProjectForm();
-    updateLocalData();
-    switchLink(newProjectTitle);
   };
 
   const removeProject = (e) => {
@@ -194,6 +197,19 @@ const screenController = () => {
       switchLinkOnClick(e);
     }
   });
+
+  mainNav.addEventListener("click", toggleNav);
+
+  toggleNavBtn.addEventListener("click", () => {
+    const mainNavStatus = mainNav.getAttribute("aria-expanded");
+
+    if (mainNavStatus === "true") {
+      mainNav.setAttribute("aria-expanded", "false");
+      return;
+    }
+    mainNav.setAttribute("aria-expanded", "true");
+  });
+
   mainNav.addEventListener("click", (e) => {
     if (e.target.matches(".delete-btn")) {
       removeProject(e);
@@ -317,9 +333,20 @@ const screenController = () => {
     currentProjectContainer.closest("li").classList.add("active");
   }
 
+  function toggleNav(e) {
+    const isProject = e.target.matches("[data-project");
+    const isFolder = e.target.matches("[data-folder]");
+    const isBody = e.target.matches(".main-nav");
+
+    if (isProject || isFolder || isBody) {
+      mainNav.setAttribute("aria-expanded", "false");
+    }
+  }
+
   function toggleProjectForm() {
     const ProjectFormDisplay = window.getComputedStyle(projectForm).display;
-    projectForm.style.display = ProjectFormDisplay === "none" ? "flex" : "none";
+    projectForm.style.display =
+      ProjectFormDisplay === "none" ? "block" : "none";
   }
 
   function init() {
