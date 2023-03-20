@@ -89,8 +89,8 @@ body {
 }
 
 .container {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
+  // display: grid;
+  // grid-template-columns: 1fr 2fr;
   height: 100vh;
   font-family: $primary-font;
   color: $primary-font-clr;
@@ -110,35 +110,84 @@ button
 
  // Nav section
 
-nav {
-  @include flex(5em, $vertical: true);
+ header {
+  display: flex;
+  height: 60px;
   background-color: $clr-primary;
-  padding: 3em;
 
-  ul {
-    @include flex(1em, $vertical: true);
-    list-style: none;
+  .toggle-nav-btn {
+    margin-left: 2.5em;
 
-    li {
-      display: flex;
-      justify-content: space-between;
-  
-      &.active {
-        color: $clr-accent;
+    svg {
+      fill: $clr-accent;
+
+      &:hover {
+        filter: brightness(90%);
       }
-
-      span:first-child {
-        font-weight: 600;
-        cursor: pointer;
-  
-        &:hover {
-          color: $clr-accent
-        }
-      }
-  
     }
   }
-}
+
+  nav {
+    height: calc(100vh - 60px);
+    width: 100vw;
+    background-color: rgba(133, 131, 131, 0.3);
+    position: fixed;
+    top: 60px;
+    z-index: 99;
+    display: block;
+    visibility: hidden;
+    pointer-events: none;
+  
+    .nav-wrapper { 
+      @include flex(2em, $vertical: true);
+      background-color: $clr-primary;
+      box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, .3);
+      padding: 2.5em;
+      height: 100vh;
+      width: 300px;
+      display: flex;
+      transform: translateX(-100%);
+      pointer-events: none;
+      transition: all 150ms ease-out;
+  
+    }
+  
+    &[aria-expanded="true"] {
+      visibility: visible;
+      pointer-events: auto;
+    }
+    
+    &[aria-expanded="true"] .nav-wrapper {
+      transform: translateX(0);
+      transition: all 200ms ease-in;
+      pointer-events: auto;
+    }
+  
+    ul {
+      @include flex(1em, $vertical: true);
+      list-style: none;
+  
+      li {
+        display: flex;
+        justify-content: space-between;
+    
+        &.active {
+          color: $clr-accent;
+        }
+  
+        span:first-child {
+          font-weight: 600;
+          cursor: pointer;
+    
+          &:hover {
+            color: $clr-accent
+          }
+        }
+    
+      }
+    }
+  }
+ }
 
 .projects-container {
   @include flex(1em, $vertical: true);
@@ -178,7 +227,8 @@ nav {
 .tasks-container {
   @include flex(1.5em, $vertical: true);
   padding-block: 2rem;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   .tasks {
     @include flex(10px, $vertical: true);
