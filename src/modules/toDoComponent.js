@@ -1,4 +1,5 @@
 import format from "date-fns/format";
+import { deleteIcon, editIcon } from "./svgGenerator";
 
 export default function generateTaskComponent(task) {
   const taskComponent = toDoComponent(
@@ -71,7 +72,7 @@ function editBtnElement() {
 
   editBtn.classList.add("edit-btn");
 
-  editBtn.textContent = "Edit";
+  editBtn.appendChild(editIcon());
 
   return editBtn;
 }
@@ -79,9 +80,9 @@ function editBtnElement() {
 function deleteBtnElement() {
   const deleteBtn = document.createElement("button");
 
-  deleteBtn.classList.add("delete-btn");
+  deleteBtn.appendChild(deleteIcon());
 
-  deleteBtn.textContent = "Delete";
+  deleteBtn.classList.add("delete-btn");
 
   return deleteBtn;
 }
