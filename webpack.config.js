@@ -3,7 +3,7 @@ const path = require("path");
 
 module.exports = {
   mode: "development",
-  entry: ["./src/index.js", "./src/index.scss"],
+  entry: ["./src/index.js", "./src/style.scss"],
   devtool: "inline-source-map",
   devServer: {
     static: "./dist",
