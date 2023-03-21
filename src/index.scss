@@ -133,7 +133,9 @@ button
  }
 
  .edit-btn,
- .delete-btn {
+ .delete-btn,
+ .save-btn,
+ .cancel-btn {
 
   svg {
     pointer-events: none;
