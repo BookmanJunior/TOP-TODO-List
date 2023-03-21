@@ -1,3 +1,5 @@
+import { deleteIcon, editIcon } from "./svgGenerator";
+
 function projectComponent(projectTitle) {
   const li = document.createElement("li");
   const title = document.createElement("span");
@@ -14,8 +16,9 @@ function projectComponent(projectTitle) {
   editBtn.classList.add("edit-btn");
 
   title.textContent = projectTitle;
-  deleteBtn.textContent = "Delete";
-  editBtn.textContent = "Edit";
+
+  deleteBtn.appendChild(deleteIcon());
+  editBtn.appendChild(editIcon());
 
   title.dataset.project = projectTitle;
 
