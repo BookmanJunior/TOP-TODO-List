@@ -108,8 +108,7 @@ button
   color: $primary-font-clr;
  }
 
- // Nav section
-
+ 
  header {
   display: flex;
   height: 60px;
@@ -126,68 +125,93 @@ button
       }
     }
   }
+ }
 
-  nav {
-    height: calc(100vh - 60px);
-    width: 100vw;
-    background-color: rgba(133, 131, 131, 0.3);
-    position: fixed;
-    top: 60px;
-    z-index: 99;
-    display: block;
-    visibility: hidden;
+ // Nav section
+
+ aside {
+  height: calc(100vh - 60px);
+  width: 100vw;
+  background-color: rgba(133, 131, 131, 0.3);
+  position: fixed;
+  top: 60px;
+  z-index: 99;
+  display: block;
+  visibility: hidden;
+
+  .nav-wrapper { 
+    @include flex(2em, $vertical: true);
+    background-color: $clr-primary;
+    box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, .3);
+    padding: 3em;
+    height: 100vh;
+    width: 300px;
+    display: flex;
+    transform: translateX(-100%);
     pointer-events: none;
-  
-    .nav-wrapper { 
-      @include flex(2em, $vertical: true);
-      background-color: $clr-primary;
-      box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, .3);
-      padding: 2.5em;
-      height: 100vh;
-      width: 300px;
-      display: flex;
-      transform: translateX(-100%);
-      pointer-events: none;
-      transition: all 150ms ease-out;
-  
-    }
-  
-    &[aria-expanded="true"] {
-      visibility: visible;
-      pointer-events: auto;
-    }
+    transition: all 150ms ease-out;
 
-    &[aria-expanded="true"] .nav-wrapper {
-      transform: translateX(0);
-      transition: all 200ms ease-in;
-      pointer-events: auto;
-    }
+  }
+
+  &[aria-expanded="true"] {
+    visibility: visible;
+  }
+
+  &[aria-expanded="true"] .nav-wrapper {
+    transform: translateX(0);
+    transition: all 200ms ease-in;
+    pointer-events: auto;
+  }
+
+  ul {
+    @include flex(1em, $vertical: true);
+    list-style: none;
+
+    li {
+      display: flex;
+      justify-content: space-between;
   
-    ul {
-      @include flex(1em, $vertical: true);
-      list-style: none;
-  
-      li {
-        display: flex;
-        justify-content: space-between;
-    
-        &.active {
-          color: $clr-accent;
-        }
-  
-        span:first-child {
-          font-weight: 600;
-          cursor: pointer;
-    
-          &:hover {
-            color: $clr-accent
-          }
-        }
-    
+      &.active {
+        color: $clr-accent;
       }
+
+      span:first-child {
+        font-weight: 600;
+        cursor: pointer;
+  
+        &:hover {
+          color: $clr-accent
+        }
+      }
+  
     }
   }
- }
+}
+
+@media screen and (min-width: 950px) {
+
+  header {
+    display: none;
+  }
+
+  main {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+  }
+
+  aside {
+    position: static;
+    background-color: transparent;
+    visibility: visible;
+    width: auto;
+
+    .nav-wrapper {
+      transform: translate(0);
+      box-shadow: none;
+      pointer-events: auto;
+    }
+  }
+}
 
 .projects-container {
   @include flex(1em, $vertical: true);
