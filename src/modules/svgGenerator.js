@@ -36,4 +36,19 @@ const editIcon = () => {
   return icon.svg;
 };
 
-export { svgGenerator, deleteIcon, editIcon };
+const addIcon = () => {
+  const path = "M378 810 154 586l43-43 181 181 384-384 43 43-427 427Z";
+  const icon = svgGenerator(path, "add-icon");
+
+  return icon.svg;
+};
+
+const cancelIcon = () => {
+  const path =
+    "m249 849-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z";
+  const icon = svgGenerator(path, "cancel-icon");
+
+  return icon.svg;
+};
+
+export { svgGenerator, deleteIcon, editIcon, addIcon, cancelIcon };
