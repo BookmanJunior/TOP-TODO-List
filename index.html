@@ -43,7 +43,9 @@
             />
           </svg>
         </button>
-        <nav
+      </header>
+      <main>
+        <aside
           class="main-nav"
           id="mainNav"
           aria-expanded="false"
@@ -102,52 +104,52 @@
               </form>
             </div>
           </div>
-        </nav>
-      </header>
-      <div class="tasks-container" id="tasksContainer">
-        <form class="task-form">
-          <div class="left-wrapper">
-            <div class="priority-btns">
+        </aside>
+        <section class="tasks-container" id="tasksContainer">
+          <form class="task-form">
+            <div class="left-wrapper">
+              <div class="priority-btns">
+                <input
+                  type="radio"
+                  name="priority"
+                  value="high"
+                  class="high-priority"
+                  required
+                />
+                <input
+                  type="radio"
+                  name="priority"
+                  value="medium"
+                  class="medium-priority"
+                />
+                <input
+                  type="radio"
+                  name="priority"
+                  value="low"
+                  class="low-priority"
+                />
+              </div>
               <input
-                type="radio"
-                name="priority"
-                value="high"
-                class="high-priority"
+                type="text"
+                name="task-title"
+                id="taskTitle"
+                placeholder="What is your next task?"
                 required
               />
+            </div>
+            <div class="right-wrapper">
+              <input type="date" name="dueDate" id="dueDate" />
               <input
-                type="radio"
-                name="priority"
-                value="medium"
-                class="medium-priority"
-              />
-              <input
-                type="radio"
-                name="priority"
-                value="low"
-                class="low-priority"
+                type="submit"
+                title="Add Task"
+                class="addTask-btn"
+                value="+"
               />
             </div>
-            <input
-              type="text"
-              name="task-title"
-              id="taskTitle"
-              placeholder="What is your next task?"
-              required
-            />
-          </div>
-          <div class="right-wrapper">
-            <input type="date" name="dueDate" id="dueDate" />
-            <input
-              type="submit"
-              title="Add Task"
-              class="addTask-btn"
-              value="+"
-            />
-          </div>
-        </form>
-        <div class="tasks"></div>
-      </div>
+          </form>
+          <div class="tasks"></div>
+        </section>
+      </main>
     </div>
   </body>
 </html>
