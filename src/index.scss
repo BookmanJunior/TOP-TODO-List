@@ -132,6 +132,25 @@ button
   width: 100%;
  }
 
+ .edit-btn,
+ .delete-btn {
+
+  svg {
+    pointer-events: none;
+
+    &.edit-icon {
+      transform: translateY(-2px);
+    }
+  }
+
+  &:hover {
+    path{
+      fill: $clr-accent;
+    }
+  }
+
+ }
+
  // Nav section
 
  aside {
