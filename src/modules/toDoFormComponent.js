@@ -1,3 +1,5 @@
+import { addIcon, cancelIcon } from "./svgGenerator";
+
 export default function generateToDoFromComponent(task) {
   const toDoEditForm = toDoFormComponent();
   toDoEditForm.priority.value = task.priority;
@@ -42,8 +44,9 @@ function rightSideWrapper() {
 
   wrapper.classList.add("right-wrapper");
 
-  const addBtn = btnFactory("submit", "save-btn", "+");
-  const cancelBtn = btnFactory("button", "cancel-btn", "cancel");
+  const addBtn = btnFactory("save-btn", addIcon());
+  const cancelBtn = btnFactory("cancel-btn", cancelIcon());
+  cancelBtn.btn.type = "button";
 
   wrapper.append(datePicker(), addBtn.btn, cancelBtn.btn);
 
@@ -81,11 +84,10 @@ function datePicker() {
   return date;
 }
 
-function btnFactory(type, className, value) {
-  const btn = document.createElement("input");
-  btn.type = type;
+function btnFactory(className, icon) {
+  const btn = document.createElement("button");
+  btn.appendChild(icon);
   btn.classList.add(className);
-  btn.value = value;
 
   return { btn };
 }
