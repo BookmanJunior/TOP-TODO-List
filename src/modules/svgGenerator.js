@@ -11,6 +11,7 @@ function svgGenerator(drawPath, className = "") {
   svg.setAttribute("viewBox", "0 96 960 960");
   svg.setAttribute("width", "24px");
   svg.setAttribute("height", "24px");
+  svg.setAttribute("aria-hidden", "true");
 
   svgPath.setAttribute("d", drawPath);
   svgPath.setAttribute("fill", "#717082");
