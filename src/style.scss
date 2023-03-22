@@ -113,10 +113,11 @@ button
   display: flex;
   height: 60px;
   background-color: $clr-primary;
+  align-items: center;
+  gap: 1em;
+  padding-inline: 1em;
 
   .toggle-nav-btn {
-    margin-left: 2.5em;
-
     svg {
       fill: $clr-accent;
 
@@ -125,6 +126,13 @@ button
       }
     }
   }
+
+  .logo {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: $clr-accent;
+  }
+
  }
 
  .edit-project-title,
@@ -174,7 +182,7 @@ button
     @include flex(2em, $vertical: true);
     background-color: $clr-primary;
     box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, .3);
-    padding: 3em;
+    padding: 2.5em 1em;
     height: 100vh;
     width: 300px;
     display: flex;
@@ -240,6 +248,7 @@ button
       transform: translate(0);
       box-shadow: none;
       pointer-events: auto;
+      padding-inline: 2.5em;
     }
   }
 }
@@ -284,6 +293,13 @@ button
   padding-block: 2rem;
   overflow-x: hidden;
   overflow-y: auto;
+
+  h1 {
+    color: $clr-primary;
+    border-bottom: 1px solid;
+    width: min(1000px, 95%);
+    place-self: center;
+  }
 
   .tasks {
     @include flex(1em, $vertical: true);
