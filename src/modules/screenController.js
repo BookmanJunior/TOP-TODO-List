@@ -16,6 +16,7 @@ const screenController = () => {
   const todayFolder = document.querySelector('[data-folder="Today"]');
   const thisWeeksFolder = document.querySelector('[data-folder="This Week"]');
   const tasksContainer = document.querySelector(".tasks");
+  const pageTitle = document.querySelector(".page-title");
   const taskForm = document.querySelector(".task-form");
   const projectForm = document.getElementById("projectForm");
   const projectAddBtn = document.getElementById("addProjectBtn");
@@ -299,6 +300,7 @@ const screenController = () => {
     currentProject = Projects.getProject(linkTitle) ?? linkTitle;
     refreshTasks();
     changeActiveLink();
+    changePageTitle(linkTitle);
   }
 
   function switchLinkOnClick(e) {
@@ -317,6 +319,7 @@ const screenController = () => {
 
     currentProject = Projects.getProject(linkTitle) ?? linkTitle;
     refreshTasks();
+    changePageTitle(linkTitle);
     changeActiveLink();
   }
 
@@ -362,6 +365,10 @@ const screenController = () => {
   function focusInputElement(element) {
     const el = document.getElementById(element);
     el.focus();
+  }
+
+  function changePageTitle(title) {
+    pageTitle.textContent = title;
   }
 };
 
