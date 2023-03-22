@@ -202,13 +202,9 @@ const screenController = () => {
   mainNav.addEventListener("click", toggleNav);
 
   toggleNavBtn.addEventListener("click", () => {
-    const mainNavStatus = mainNav.getAttribute("aria-expanded");
+    const NavBtnState = toggleNavBtn.getAttribute("aria-expanded") === "true";
 
-    if (mainNavStatus === "true") {
-      mainNav.setAttribute("aria-expanded", "false");
-      return;
-    }
-    mainNav.setAttribute("aria-expanded", "true");
+    NavBtnState ? navClose() : navOpen();
   });
 
   mainNav.addEventListener("click", (e) => {
@@ -342,7 +338,7 @@ const screenController = () => {
     const isBody = e.target.matches(".main-nav");
 
     if (isProject || isFolder || isBody) {
-      mainNav.setAttribute("aria-expanded", "false");
+      navClose();
     }
   }
 
@@ -369,6 +365,16 @@ const screenController = () => {
 
   function changePageTitle(title) {
     pageTitle.textContent = title;
+  }
+
+  function navOpen() {
+    toggleNavBtn.setAttribute("aria-expanded", "true");
+    mainNav.classList.add("show");
+  }
+
+  function navClose() {
+    toggleNavBtn.setAttribute("aria-expanded", "false");
+    mainNav.classList.remove("show");
   }
 };
 
