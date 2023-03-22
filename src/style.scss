@@ -192,11 +192,11 @@ button
 
   }
 
-  &[aria-expanded="true"] {
+  &.show {
     visibility: visible;
   }
 
-  &[aria-expanded="true"] .nav-wrapper {
+  &.show .nav-wrapper {
     transform: translateX(0);
     transition: all 200ms ease-in;
     pointer-events: auto;
