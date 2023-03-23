@@ -3,11 +3,13 @@
 // Custom variables
 $clr-primary: #ffffff;
 $clr-accent: #a18aff;
-$high-priority-clr: #fd99af;
-$mid-priority-clr: #fac608;
-$low-priority-clr: #3fd4f4;
 $primary-font: "Poppins", sans-serif;
 $primary-font-clr: #717082;
+$priority-colors: (
+  high-priority: #fd99af,
+  medium-priority: #fac608,
+  low-priority: #3fd4f4,
+);
 
 @mixin reset-default-appearance {
   appearance: none;
@@ -351,7 +353,6 @@ button
   }
 }
 
-
 input:is([type="radio"], [type="checkbox"]) {
   $size: 1.1250em;
 
@@ -363,51 +364,8 @@ input:is([type="radio"], [type="checkbox"]) {
   display: grid;
   place-content: center;
 
-  &.high-priority {
-  border-color: $high-priority-clr;
-
-  &::after {
-    background-color: $high-priority-clr;
-  }
-
-    &:checked::after {
-      background-color: $high-priority-clr;
-    }
-  }
-
-  &.medium-priority {
-    border-color: $mid-priority-clr;
-
-    &::after {
-      background-color: $mid-priority-clr;
-    }
-
-    &:checked::after {
-      background-color: $mid-priority-clr;
-    }
-  }
-  
-  &.low-priority {
-    border-color: $low-priority-clr;
-
-    &::after {
-      background-color: $low-priority-clr;
-    }
-
-    &:checked::after { 
-      background-color: $low-priority-clr;
-    }
-  }  
-  }
-
-input[type="radio"] {
-  $circle-size: 1em;
-
   &::after {
     content: "";
-    height: $circle-size;
-    width: $circle-size;
-    border-radius: 50%;
     transform: scale(0);
     transition: transform 120ms ease-out;
 
@@ -416,6 +374,30 @@ input[type="radio"] {
   &:checked::after {
     transform: scale(1);
   }
+
+  @each $name, $color in $priority-colors {
+    &.#{$name} {
+      border-color: $color;
+
+      &::after {
+        background-color: $color;
+      }
+
+      &:checked::after {
+        background-color: $color;
+      }
+    }
+  }
+  }
+
+input[type="radio"] {
+  $circle-size: 1em;
+
+  &::after {
+    height: $circle-size;
+    width: $circle-size;
+    border-radius: 50%;
+  }
 }
 
 
@@ -423,16 +405,9 @@ input[type="checkbox"] {
   $check-mark-size: 0.75em;  
 
   &::after {
-  content: "";
   height: $check-mark-size;
   width: $check-mark-size;
   clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-  transform: scale(0);
   transform-origin: bottom left;
-  transition: transform 120ms ease-out;
-}
-
-&:checked::after {
-  transform: scale(1);
 }
 }
