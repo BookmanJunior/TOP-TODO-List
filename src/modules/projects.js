@@ -64,10 +64,8 @@ export default class Projects {
     );
   }
 
-  static #getProjectsIndex(project) {
-    return this.#projectsList.findIndex(
-      (element) => element.title.toLowerCase() === project.toLowerCase()
-    );
+  static updateLocalDataProjects() {
+    localStorage.setItem("projects", JSON.stringify(this.#projectsList));
   }
 
   static checkForDuplicateProjects(newProjectTitle) {
@@ -78,5 +76,11 @@ export default class Projects {
 
   static get list() {
     return this.#projectsList;
+  }
+
+  static #getProjectsIndex(project) {
+    return this.#projectsList.findIndex(
+      (element) => element.title.toLowerCase() === project.toLowerCase()
+    );
   }
 }
