@@ -9,12 +9,8 @@ const screenController = () => {
   const mainNav = document.getElementById("mainNav");
   const toggleNavBtn = document.querySelector(".toggle-nav-btn");
   const projectsContainer = document.getElementById("projects");
-  const inboxFolder = document.querySelector('[data-project="Inbox"]');
-  const completedTasksFolder = document.querySelector(
-    '[data-folder="Completed"]'
-  );
-  const todayFolder = document.querySelector('[data-folder="Today"]');
-  const thisWeeksFolder = document.querySelector('[data-folder="This Week"]');
+  const inboxProject = document.querySelector('[data-project="Inbox"]');
+  const defaultFolders = [...document.querySelectorAll("[data-folder]")];
   const tasksContainer = document.querySelector(".tasks");
   const pageTitle = document.querySelector(".page-title");
   const taskForm = document.querySelector(".task-form");
@@ -38,21 +34,20 @@ const screenController = () => {
     );
     renderTask(newTask);
     currentProject.addTask(newTask);
-    updateLocalData();
+    Projects.updateLocalDataProjects();
     taskForm.reset();
   };
 
   const editTask = (e) => {
-    const taskElement = e.target.closest(".task");
-    const taskId = taskElement.getAttribute("data-id");
-    const tasksProject = Projects.getTasksProject(taskId);
-
-    const task = tasksProject.getTask(taskId);
-    currentTask = task;
+    const taskElement = getTasksElement(e);
+    currentTask = taskElement.activeTask;
 
     // replace task with task edit form
     const toDoEditForm = generateToDoFromComponent(currentTask);
-    taskElement.replaceWith(toDoEditForm);
+    taskElement.taskContainer.replaceWith(toDoEditForm);
+
+    focusInputElement("newTaskTitle");
+    projectFormClose();
   };
 
   const saveEditedTask = (e) => {
@@ -63,17 +58,15 @@ const screenController = () => {
       currentTask.changeDueDate(e.target.dueDate.valueAsDate);
       const taskContainer = generateTaskComponent(currentTask);
       e.target.replaceWith(taskContainer);
-      updateLocalData();
+      Projects.updateLocalDataProjects();
     }
   };
 
   const removeTask = (e) => {
-    const parentContainer = e.target.closest(".task");
-    const tasksId = parentContainer.getAttribute("data-id");
-    const selectedProject = Projects.getTasksProject(tasksId);
-    parentContainer.remove();
-    selectedProject.removeTask(tasksId);
-    updateLocalData();
+    const taskElement = getTasksElement(e);
+    taskElement.taskContainer.remove();
+    taskElement.tasksProject.removeTask(taskElement.tasksId);
+    Projects.updateLocalDataProjects();
   };
 
   const renderProject = (project) => {
@@ -89,11 +82,11 @@ const screenController = () => {
     }
 
     Projects.addProject(newProjectTitle);
-    updateLocalData();
+    Projects.updateLocalDataProjects();
     renderProject(newProjectTitle);
     switchLink(newProjectTitle);
     projectForm.reset();
-    toggleProjectForm();
+    projectFormClose();
     navClose();
   };
 
@@ -122,7 +115,7 @@ const screenController = () => {
 
     currentProject.title = projectEditFormValue;
     refreshUserProjects();
-    updateLocalData();
+    Projects.updateLocalDataProjects();
     switchLink(currentProject.title);
   };
 
@@ -132,7 +125,7 @@ const screenController = () => {
       parentContainer.firstChild.getAttribute("data-project");
 
     Projects.removeProject(projectsTitle);
-    updateLocalData();
+    Projects.updateLocalDataProjects();
     parentContainer.remove();
 
     // switch to default Inbox folder if active project was deleted
@@ -155,7 +148,7 @@ const screenController = () => {
 
   mainNav.addEventListener("click", (e) => {
     if (e.target.matches(".project-title")) {
-      switchLinkOnClick(e);
+      switchProject(e);
     }
   });
 
@@ -163,7 +156,6 @@ const screenController = () => {
 
   toggleNavBtn.addEventListener("click", () => {
     const NavBtnState = toggleNavBtn.getAttribute("aria-expanded") === "true";
-
     NavBtnState ? navClose() : navOpen();
   });
 
@@ -174,22 +166,22 @@ const screenController = () => {
     }
   });
 
-  inboxFolder.addEventListener("click", switchLinkOnClick);
-  completedTasksFolder.addEventListener("click", switchLinkOnClick);
-  todayFolder.addEventListener("click", switchLinkOnClick);
-  thisWeeksFolder.addEventListener("click", switchLinkOnClick);
+  inboxProject.addEventListener("click", switchProject);
+
+  defaultFolders.forEach((folder) => {
+    folder.addEventListener("click", switchFolder);
+  });
   taskForm.addEventListener("submit", generateNewTask);
   tasksContainer.addEventListener("submit", saveEditedTask);
   tasksContainer.addEventListener("click", (e) => {
     if (e.target.matches(".edit-btn")) {
       // check for existing task edit form
-      const formExist = document.querySelector(".edit-form");
-      if (formExist) {
-        formExist.replaceWith(generateTaskComponent(currentTask));
+      if (editFormExists(".edit-form")) {
+        editFormExists(".edit-form").replaceWith(
+          generateTaskComponent(currentTask)
+        );
       }
       editTask(e);
-      focusInputElement("newTaskTitle");
-      projectForm.style.display = "none";
     }
   });
   tasksContainer.addEventListener("click", (e) => {
@@ -204,28 +196,20 @@ const screenController = () => {
   });
   tasksContainer.addEventListener("click", (e) => {
     if (e.target.type === "checkbox") {
-      const taskContainer = e.target.closest(".task");
-      const tasksId = taskContainer.getAttribute("data-id");
-      const tasksProject = Projects.getTasksProject(tasksId);
-      const activeTask = tasksProject.getTask(tasksId);
+      const taskElement = getTasksElement(e);
 
       if (e.target.checked) {
-        activeTask.changeStatus("checked");
+        taskElement.activeTask.changeStatus("checked");
       } else {
-        activeTask.changeStatus("unchecked");
+        taskElement.activeTask.changeStatus("unchecked");
         if (currentProject === "Completed") {
-          taskContainer.remove();
+          taskElement.taskContainer.remove();
         }
       }
-      updateLocalData();
+      Projects.updateLocalDataProjects();
     }
   });
-  projectAddBtn.addEventListener("click", () => {
-    refreshUserProjects();
-    switchLink(currentProject.title);
-    toggleProjectForm();
-    focusInputElement("projectInput");
-  });
+  projectAddBtn.addEventListener("click", projectFormOpen);
   projectForm.addEventListener("submit", addProject);
   cancelProjectFormBtn.addEventListener("click", () => {
     projectForm.reset();
@@ -234,25 +218,26 @@ const screenController = () => {
   projectsContainer.addEventListener("submit", saveEditedProject);
   projectsContainer.addEventListener("click", (e) => {
     if (e.target.matches(".cancel-project-change")) {
-      refreshUserProjects();
-      switchLink(currentProject.title);
+      removeExistingProjectForms();
     }
   });
   projectsContainer.addEventListener("click", (e) => {
     if (e.target.matches(".edit-btn")) {
-      // remove previous edit form
-      const editFormExists = document.querySelector(`.edit-project-form`);
-
-      if (editFormExists) {
-        editFormExists.replaceWith(projectComponent(currentProject.title));
-      }
-
+      removeExistingProjectForms();
       editUserProject(e);
-      projectForm.style.display = "none";
     }
   });
 
   // Helper functions
+
+  function getTasksElement(e) {
+    const taskContainer = e.target.closest(".task");
+    const tasksId = taskContainer.getAttribute("data-id");
+    const tasksProject = Projects.getTasksProject(tasksId);
+    const activeTask = tasksProject.getTask(tasksId);
+
+    return { taskContainer, tasksId, tasksProject, activeTask };
+  }
 
   function renderAllTasks() {
     taskController.getAllTasks().forEach((task) => {
@@ -307,16 +292,17 @@ const screenController = () => {
   function switchLink(linkTitle) {
     currentProject = Projects.getProject(linkTitle) ?? linkTitle;
     refreshTasks();
-    changeActiveLink();
     changePageTitle(linkTitle);
+    changeActiveLink();
+    projectFormClose();
+    taskForm.reset();
   }
 
   function switchLinkOnClick(e) {
     const linkContainer = e.target.closest("li");
     const linkTitle = linkContainer.firstElementChild.textContent;
     // close edit form on another project click
-    const editFormExists = document.querySelector(`.edit-project-form`);
-    if (editFormExists) {
+    if (editFormExists(".edit-project-form")) {
       refreshUserProjects();
     }
 
@@ -325,11 +311,17 @@ const screenController = () => {
       return;
     }
 
-    currentProject = Projects.getProject(linkTitle) ?? linkTitle;
-    refreshTasks();
-    changePageTitle(linkTitle);
-    changeActiveLink();
-    taskForm.reset();
+    switchLink(linkTitle);
+  }
+
+  function switchProject(e) {
+    switchLinkOnClick(e);
+    taskFormOpen();
+  }
+
+  function switchFolder(e) {
+    switchLinkOnClick(e);
+    taskFormClose();
   }
 
   function changeActiveLink() {
@@ -345,6 +337,39 @@ const screenController = () => {
     currentProjectContainer.closest("li").classList.add("active");
   }
 
+  function focusInputElement(element) {
+    const el = document.getElementById(element);
+    el.focus();
+  }
+
+  function changePageTitle(title) {
+    pageTitle.textContent = title;
+  }
+
+  function taskFormOpen() {
+    taskForm.dataset.state = "displayed";
+  }
+
+  function taskFormClose() {
+    taskForm.dataset.state = "hidden";
+  }
+
+  function toggleProjectForm() {
+    const projectFormState = projectForm.dataset.state;
+    projectForm.dataset.state =
+      projectFormState === "hidden" ? "displayed" : "hidden";
+  }
+
+  function projectFormOpen() {
+    toggleProjectForm();
+    removeExistingProjectForms();
+    focusInputElement("projectInput");
+  }
+
+  function projectFormClose() {
+    projectForm.dataset.state = "hidden";
+  }
+
   function toggleNav(e) {
     const isProject = e.target.matches("[data-project");
     const isFolder = e.target.matches("[data-folder]");
@@ -355,33 +380,26 @@ const screenController = () => {
     }
   }
 
-  function toggleProjectForm() {
-    const ProjectFormDisplay = window.getComputedStyle(projectForm).display;
-    projectForm.style.display =
-      ProjectFormDisplay === "none" ? "block" : "none";
-  }
-
-  function updateLocalData() {
-    localStorage.setItem("projects", JSON.stringify(Projects.list));
-  }
-
-  function focusInputElement(element) {
-    const el = document.getElementById(element);
-    el.focus();
-  }
-
-  function changePageTitle(title) {
-    pageTitle.textContent = title;
-  }
-
   function navOpen() {
     toggleNavBtn.setAttribute("aria-expanded", "true");
-    mainNav.classList.add("show");
+    mainNav.dataset.state = "displayed";
   }
 
   function navClose() {
     toggleNavBtn.setAttribute("aria-expanded", "false");
-    mainNav.classList.remove("show");
+    mainNav.dataset.state = "hidden";
+  }
+
+  function removeExistingProjectForms() {
+    if (editFormExists(".edit-project-form")) {
+      editFormExists(".edit-project-form").remove();
+      document.querySelector(".active").style.display = "flex";
+    }
+  }
+
+  function editFormExists(formClass) {
+    const editFormEl = document.querySelector(formClass);
+    return editFormEl;
   }
 };
 
