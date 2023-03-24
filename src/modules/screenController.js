@@ -24,54 +24,22 @@ const screenController = () => {
   let currentProject;
   let currentTask;
 
-  const defaultFolderFunctions = () => ({
-    Inbox: taskController.getAllTasks(),
-    Today: taskController.getTodaysTasks(),
-    Completed: taskController.getCompletedTasks(),
-    "This Week": taskController.getThisWeeksTasks(),
-  });
-
   const renderTask = (task) => {
     const taskComponent = generateTaskComponent(task);
     tasksContainer.appendChild(taskComponent);
   };
 
-  const renderAllTasks = () => {
-    taskController.getAllTasks().forEach((task) => {
-      renderTask(task);
-    });
-  };
-
-  const removeTask = (e) => {
-    const parentContainer = e.target.closest(".task");
-    const tasksId = parentContainer.getAttribute("data-id");
-    const selectedProject = Projects.getTasksProject(tasksId);
-    parentContainer.remove();
-    selectedProject.removeTask(tasksId);
+  const generateNewTask = (e) => {
+    e.preventDefault();
+    const newTask = ToDo(
+      taskForm.taskTitle.value,
+      taskForm.dueDate.value,
+      taskForm.priority.value
+    );
+    renderTask(newTask);
+    currentProject.addTask(newTask);
     updateLocalData();
-  };
-
-  const refreshTasks = () => {
-    const defaultFolders = defaultFolderFunctions();
-    const folderExists = Object.keys(defaultFolders).includes(currentProject);
-
-    tasksContainer.textContent = "";
-
-    if (currentProject.title === "Inbox") {
-      renderAllTasks();
-      return;
-    }
-
-    if (folderExists) {
-      defaultFolders[currentProject].forEach((task) => {
-        renderTask(task);
-      });
-      return;
-    }
-
-    currentProject.tasks.forEach((task) => {
-      renderTask(task);
-    });
+    taskForm.reset();
   };
 
   const editTask = (e) => {
@@ -99,34 +67,34 @@ const screenController = () => {
     }
   };
 
-  const generateNewTask = (e) => {
-    e.preventDefault();
-    const newTask = ToDo(
-      taskForm.taskTitle.value,
-      taskForm.dueDate.value,
-      taskForm.priority.value
-    );
-    renderTask(newTask);
-    currentProject.addTask(newTask);
+  const removeTask = (e) => {
+    const parentContainer = e.target.closest(".task");
+    const tasksId = parentContainer.getAttribute("data-id");
+    const selectedProject = Projects.getTasksProject(tasksId);
+    parentContainer.remove();
+    selectedProject.removeTask(tasksId);
     updateLocalData();
-    taskForm.reset();
   };
 
   const renderProject = (project) => {
     projectsContainer.appendChild(projectComponent(project));
   };
 
-  const renderUserProjects = () => {
-    // skip inbox project
-    const allUserProjects = Projects.list.slice(1);
-    allUserProjects.forEach((project) => {
-      renderProject(project.title);
-    });
-  };
+  const addProject = (e) => {
+    e.preventDefault();
+    const newProjectTitle = projectForm.projectInput.value;
 
-  const refreshUserProjects = () => {
-    projectsContainer.textContent = "";
-    renderUserProjects();
+    if (Projects.checkForDuplicateProjects(newProjectTitle)) {
+      return;
+    }
+
+    Projects.addProject(newProjectTitle);
+    updateLocalData();
+    renderProject(newProjectTitle);
+    switchLink(newProjectTitle);
+    projectForm.reset();
+    toggleProjectForm();
+    navClose();
   };
 
   const editUserProject = (e) => {
@@ -158,23 +126,6 @@ const screenController = () => {
     switchLink(currentProject.title);
   };
 
-  const addProject = (e) => {
-    e.preventDefault();
-    const newProjectTitle = projectForm.projectInput.value;
-
-    if (Projects.checkForDuplicateProjects(newProjectTitle)) {
-      return;
-    }
-
-    Projects.addProject(newProjectTitle);
-    updateLocalData();
-    renderProject(newProjectTitle);
-    switchLink(newProjectTitle);
-    projectForm.reset();
-    toggleProjectForm();
-    navClose();
-  };
-
   const removeProject = (e) => {
     const parentContainer = e.target.closest(".project");
     const projectsTitle =
@@ -189,6 +140,14 @@ const screenController = () => {
       currentProject = Projects.getProject("Inbox");
       switchLink(currentProject.title);
     }
+  };
+
+  const init = () => {
+    Projects.checkLocalData();
+    // default project on load
+    currentProject = Projects.getProject("Inbox");
+    renderAllTasks();
+    renderUserProjects();
   };
 
   // Event Listeners
@@ -293,6 +252,58 @@ const screenController = () => {
     }
   });
 
+  // Helper functions
+
+  function renderAllTasks() {
+    taskController.getAllTasks().forEach((task) => {
+      renderTask(task);
+    });
+  }
+
+  function renderUserProjects() {
+    // skip inbox project
+    const allUserProjects = Projects.list.slice(1);
+    allUserProjects.forEach((project) => {
+      renderProject(project.title);
+    });
+  }
+
+  function refreshTasks() {
+    const defaultFolderFunctions = {
+      Inbox: taskController.getAllTasks(),
+      Today: taskController.getTodaysTasks(),
+      Completed: taskController.getCompletedTasks(),
+      "This Week": taskController.getThisWeeksTasks(),
+    };
+
+    const folderExists = Object.keys(defaultFolderFunctions).includes(
+      currentProject
+    );
+
+    tasksContainer.textContent = "";
+
+    if (currentProject.title === "Inbox") {
+      renderAllTasks();
+      return;
+    }
+
+    if (folderExists) {
+      defaultFolderFunctions[currentProject].forEach((task) => {
+        renderTask(task);
+      });
+      return;
+    }
+
+    currentProject.tasks.forEach((task) => {
+      renderTask(task);
+    });
+  }
+
+  function refreshUserProjects() {
+    projectsContainer.textContent = "";
+    renderUserProjects();
+  }
+
   function switchLink(linkTitle) {
     currentProject = Projects.getProject(linkTitle) ?? linkTitle;
     refreshTasks();
@@ -318,6 +329,7 @@ const screenController = () => {
     refreshTasks();
     changePageTitle(linkTitle);
     changeActiveLink();
+    taskForm.reset();
   }
 
   function changeActiveLink() {
@@ -347,14 +359,6 @@ const screenController = () => {
     const ProjectFormDisplay = window.getComputedStyle(projectForm).display;
     projectForm.style.display =
       ProjectFormDisplay === "none" ? "block" : "none";
-  }
-
-  function init() {
-    Projects.checkLocalData();
-    // default project on load
-    currentProject = Projects.getProject("Inbox");
-    renderAllTasks();
-    renderUserProjects();
   }
 
   function updateLocalData() {
