@@ -21,7 +21,7 @@ const screenController = () => {
   const projectForm = document.getElementById("projectForm");
   const projectAddBtn = document.getElementById("addProjectBtn");
   const cancelProjectFormBtn = document.querySelector(".cancel-project-btn");
-  let currentProject = Projects.getProject("Inbox");
+  let currentProject;
   let currentTask;
 
   const defaultFolderFunctions = () => ({
@@ -172,6 +172,7 @@ const screenController = () => {
     switchLink(newProjectTitle);
     projectForm.reset();
     toggleProjectForm();
+    navClose();
   };
 
   const removeProject = (e) => {
@@ -350,6 +351,8 @@ const screenController = () => {
 
   function init() {
     Projects.checkLocalData();
+    // default project on load
+    currentProject = Projects.getProject("Inbox");
     renderAllTasks();
     renderUserProjects();
   }
