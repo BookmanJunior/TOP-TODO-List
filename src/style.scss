@@ -169,7 +169,6 @@ button
       fill: $clr-accent;
     }
   }
-
  }
 
  // Nav section
@@ -198,11 +197,11 @@ button
 
   }
 
-  &.show {
+  &[data-state="displayed"] {
     visibility: visible;
   }
 
-  &.show .nav-wrapper {
+  &[data-state="displayed"] .nav-wrapper {
     transform: translateX(0);
     transition: all 200ms ease-in;
     pointer-events: auto;
@@ -233,7 +232,7 @@ button
   }
 }
 
-@media screen and (min-width: 950px) {
+@media screen and (min-width: 970px) {
 
   header {
     display: none;
@@ -268,7 +267,12 @@ button
   }
 
   .project-form {
-    display: none;
+    &[data-state="displayed"] {
+      display: block;
+    }
+    &[data-state="hidden"] {
+      display: none;
+    }
   }
 
   .btn-container {
@@ -343,7 +347,11 @@ button
   .task-form
   {
     width: min(1000px, 95%);
-    margin: 1em;
+    margin-block: 1em;
+
+    &[data-state="hidden"] {
+      display: none;
+    }
   }
 
   .task,
