@@ -364,14 +364,43 @@ button
     margin-bottom: 1em;
   }
 
-  .task.removing {
-    margin: 0;
-    opacity: 0;
-    padding: 0;
-    height: 0;
-    overflow: hidden;
-    transform: translateY(6.25em);
-    transition: 300ms ease-out;
+  .task {
+
+    &[data-state="entrance"] {
+      opacity: 0;
+      animation: slideDown 300ms ease-out forwards;
+
+      @for $i from 1 to 20 {
+        &:nth-child(#{$i}) {
+          animation-delay: 20ms * $i;
+        }
+      }
+    }
+
+    &[data-state="adding"] {
+      animation: slideDown 300ms ease-out forwards;
+    }
+
+    &[data-state="removing"] {
+      margin: 0;
+      opacity: 0;
+      padding: 0;
+      height: 0;
+      overflow: hidden;
+      transform: translateY(6.25em);
+      transition: 300ms ease-out;
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-75px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .task-form,
