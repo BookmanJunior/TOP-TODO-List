@@ -18,9 +18,12 @@ $priority-colors: (
   outline: none;
 }
 
-@mixin flex($gapValue, $vertical: false) {
+@mixin flex($gapValue: false, $vertical: false) {
   display: flex;
-  gap: $gapValue;
+  
+  @if $gapValue {
+    gap: $gapValue;
+  }
 
   @if $vertical {
     flex-direction: column;
@@ -312,8 +315,9 @@ button
   }
 
   .tasks {
-    @include flex(1em, $vertical: true);
+    @include flex($vertical: true);
     align-items: center;
+    min-height: 12.5em; /* prevents overflow when removing transition played*/
   }
 
   .task-form,
@@ -357,6 +361,17 @@ button
   .task,
   .edit-form {
     width: min(900px, 95%);
+    margin-bottom: 1em;
+  }
+
+  .task.removing {
+    margin: 0;
+    opacity: 0;
+    padding: 0;
+    height: 0;
+    overflow: hidden;
+    transform: translateY(6.25em);
+    transition: 300ms ease-out;
   }
 
   .task-form,
