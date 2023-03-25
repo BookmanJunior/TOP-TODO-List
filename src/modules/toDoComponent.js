@@ -16,6 +16,7 @@ function toDoComponent(title, dueDate, priority, status, id) {
 
   task.classList.add("task");
   task.dataset.id = id;
+  task.dataset.state = "entrance";
 
   const leftWrapper = leftSideWrapper(title, priority, status);
   const rightWrapper = rightSideWrapper(dueDate);
