@@ -186,7 +186,13 @@ const screenController = () => {
   });
   tasksContainer.addEventListener("click", (e) => {
     if (e.target.matches(".delete-btn")) {
-      removeTask(e);
+      const taskContainer = e.target.closest(".task");
+      taskContainer.classList.add("removing");
+      taskContainer.addEventListener("transitionend", (e) => {
+        if (e.propertyName === "transform") {
+          removeTask(e);
+        }
+      });
     }
   });
   tasksContainer.addEventListener("click", (e) => {
