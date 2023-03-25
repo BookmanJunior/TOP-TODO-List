@@ -32,7 +32,13 @@ const screenController = () => {
       taskForm.dueDate.value,
       taskForm.priority.value
     );
-    renderTask(newTask);
+    const newTaskContainer = generateTaskComponent(newTask);
+    newTaskContainer.dataset.state = "adding";
+    tasksContainer.appendChild(newTaskContainer);
+
+    newTaskContainer.addEventListener("animationend", (e) => {
+      newTaskContainer.dataset.state = "added";
+    });
     currentProject.addTask(newTask);
     Projects.updateLocalDataProjects();
     taskForm.reset();
@@ -146,6 +152,13 @@ const screenController = () => {
   // Event Listeners
   window.addEventListener("load", init);
 
+  tasksContainer.addEventListener("animationend", (e) => {
+    const tasks = [...document.querySelectorAll(".task")];
+    tasks.forEach((task) => {
+      task.dataset.state = "added";
+    });
+  });
+
   mainNav.addEventListener("click", (e) => {
     if (e.target.matches(".project-title")) {
       switchProject(e);
@@ -187,7 +200,7 @@ const screenController = () => {
   tasksContainer.addEventListener("click", (e) => {
     if (e.target.matches(".delete-btn")) {
       const taskContainer = e.target.closest(".task");
-      taskContainer.classList.add("removing");
+      taskContainer.dataset.state = "removing";
       taskContainer.addEventListener("transitionend", (e) => {
         if (e.propertyName === "transform") {
           removeTask(e);
