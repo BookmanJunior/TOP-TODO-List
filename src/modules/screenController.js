@@ -151,6 +151,7 @@ const screenController = () => {
     currentProject = Projects.getProject("Inbox");
     renderAllTasks();
     renderUserProjects();
+    noTasksAvailableSign();
   };
 
   // Event Listeners
@@ -192,17 +193,27 @@ const screenController = () => {
   defaultFolders.forEach((folder) => {
     folder.addEventListener("click", switchFolder);
   });
-  taskForm.addEventListener("submit", generateNewTask);
+  taskForm.addEventListener("submit", (e) => {
+    const noTasksSign = elementExists(".no-tasks-sign");
+
+    if (noTasksSign) {
+      noTasksSign.remove();
+    }
+    generateNewTask(e);
+  });
+
   tasksContainer.addEventListener("submit", saveEditedTask);
+
   tasksContainer.addEventListener("click", (e) => {
     if (e.target.matches(".edit-btn")) {
       // check for existing task edit form
-      if (editFormExists(".edit-form")) {
+      if (elementExists(".edit-form")) {
         renderEditedTask();
       }
       editTask(e);
     }
   });
+
   tasksContainer.addEventListener("click", (e) => {
     if (e.target.matches(".delete-btn")) {
       const taskContainer = e.target.closest(".task");
@@ -211,11 +222,13 @@ const screenController = () => {
         "transitionend",
         () => {
           removeTask(e);
+          noTasksAvailableSign();
         },
         { once: true }
       );
     }
   });
+
   tasksContainer.addEventListener("click", (e) => {
     if (e.target.matches(".cancel-btn")) {
       renderEditedTask();
@@ -227,9 +240,9 @@ const screenController = () => {
       const taskElement = getTasksElement(e);
 
       if (e.target.checked) {
-        changeTasksStatus(taskElement, "completed")
+        changeTasksStatus(taskElement, "completed");
       } else {
-        changeTasksStatus(taskElement, "uncompleted")
+        changeTasksStatus(taskElement, "uncompleted");
         if (currentProject === "Completed") {
           taskElement.taskContainer.remove();
         }
@@ -328,6 +341,7 @@ const screenController = () => {
   function switchLink(linkTitle) {
     currentProject = Projects.getProject(linkTitle) ?? linkTitle;
     refreshTasks();
+    noTasksAvailableSign();
     changePageTitle(linkTitle);
     changeActiveLink();
     projectFormClose();
@@ -338,7 +352,7 @@ const screenController = () => {
     const linkContainer = e.target.closest("li");
     const linkTitle = linkContainer.firstElementChild.textContent;
     // close edit form on another project click
-    if (editFormExists(".edit-project-form")) {
+    if (elementExists(".edit-project-form")) {
       refreshUserProjects();
     }
 
@@ -387,6 +401,18 @@ const screenController = () => {
     el.taskContainer.dataset.status = value;
   }
 
+  function noTasksAvailableSign() {
+    if (tasksContainer.childElementCount <= 0) {
+      const h2El = document.createElement("h2");
+
+      h2El.textContent = "No Tasks Available";
+
+      h2El.classList.add("no-tasks-sign");
+
+      tasksContainer.appendChild(h2El);
+    }
+  }
+
   function taskFormOpen() {
     taskForm.dataset.state = "displayed";
   }
@@ -432,15 +458,17 @@ const screenController = () => {
   }
 
   function removeExistingProjectForms() {
-    if (editFormExists(".edit-project-form")) {
-      editFormExists(".edit-project-form").remove();
+    const projectEditForm = elementExists(".edit-project-form");
+
+    if (projectEditForm) {
+      projectEditForm.remove();
       document.querySelector(".active").style.display = "flex";
     }
   }
 
-  function editFormExists(formClass) {
-    const editFormEl = document.querySelector(formClass);
-    return editFormEl;
+  function elementExists(elClass) {
+    const el = document.querySelector(elClass);
+    return el;
   }
 };
 
