@@ -94,11 +94,10 @@ body {
 }
 
 .container {
-  // display: grid;
-  // grid-template-columns: 1fr 2fr;
   height: 100vh;
   font-family: $primary-font;
   color: $primary-font-clr;
+  overflow: auto;
 }
 
 input:not([type="text"]),
@@ -247,10 +246,12 @@ button
   }
 
   aside {
-    position: static;
+    position: sticky;
     background-color: transparent;
     visibility: visible;
     width: auto;
+    height: 100vh;
+    top: 0;
 
     .nav-wrapper {
       transform: translate(0);
