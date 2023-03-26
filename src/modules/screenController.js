@@ -62,13 +62,14 @@ const screenController = () => {
 
   const saveEditedTask = (e) => {
     e.preventDefault();
-    if (e.target.matches(".edit-form")) {
-      currentTask.changePriority(e.target.priority.value);
-      currentTask.changeTitle(e.target.newTaskTitle.value);
-      currentTask.changeDueDate(e.target.dueDate.valueAsDate);
-      renderEditedTask();
-      Projects.updateLocalDataProjects();
+    const taskEditForm = document.querySelector(".edit-form");
+    currentTask.priority = taskEditForm.priority.value;
+    currentTask.title = taskEditForm.newTaskTitle.value;
+    if (taskEditForm.dueDate.valueAsDate) {
+      currentTask.dueDate = taskEditForm.dueDate.valueAsDate;
     }
+    renderEditedTask();
+    Projects.updateLocalDataProjects();
   };
 
   const removeTask = (e) => {
@@ -197,9 +198,7 @@ const screenController = () => {
     if (e.target.matches(".edit-btn")) {
       // check for existing task edit form
       if (editFormExists(".edit-form")) {
-        editFormExists(".edit-form").replaceWith(
-          generateTaskComponent(currentTask)
-        );
+        renderEditedTask();
       }
       editTask(e);
     }
@@ -228,9 +227,9 @@ const screenController = () => {
       const taskElement = getTasksElement(e);
 
       if (e.target.checked) {
-        taskElement.activeTask.changeStatus("checked");
+        changeTasksStatus(taskElement, "completed")
       } else {
-        taskElement.activeTask.changeStatus("unchecked");
+        changeTasksStatus(taskElement, "uncompleted")
         if (currentProject === "Completed") {
           taskElement.taskContainer.remove();
         }
@@ -381,6 +380,11 @@ const screenController = () => {
 
   function changePageTitle(title) {
     pageTitle.textContent = title;
+  }
+
+  function changeTasksStatus(el, value) {
+    el.activeTask.status = value;
+    el.taskContainer.dataset.status = value;
   }
 
   function taskFormOpen() {
