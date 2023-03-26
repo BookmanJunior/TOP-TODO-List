@@ -36,9 +36,13 @@ const screenController = () => {
     newTaskContainer.dataset.state = "adding";
     tasksContainer.appendChild(newTaskContainer);
 
-    newTaskContainer.addEventListener("animationend", (e) => {
-      newTaskContainer.dataset.state = "added";
-    });
+    newTaskContainer.addEventListener(
+      "animationend",
+      () => {
+        newTaskContainer.dataset.state = "added";
+      },
+      { once: true }
+    );
     currentProject.addTask(newTask);
     Projects.updateLocalDataProjects();
     taskForm.reset();
@@ -62,8 +66,7 @@ const screenController = () => {
       currentTask.changePriority(e.target.priority.value);
       currentTask.changeTitle(e.target.newTaskTitle.value);
       currentTask.changeDueDate(e.target.dueDate.valueAsDate);
-      const taskContainer = generateTaskComponent(currentTask);
-      e.target.replaceWith(taskContainer);
+      renderEditedTask();
       Projects.updateLocalDataProjects();
     }
   };
@@ -152,7 +155,7 @@ const screenController = () => {
   // Event Listeners
   window.addEventListener("load", init);
 
-  tasksContainer.addEventListener("animationend", (e) => {
+  tasksContainer.addEventListener("animationend", () => {
     const tasks = [...document.querySelectorAll(".task")];
     tasks.forEach((task) => {
       task.dataset.state = "added";
@@ -169,7 +172,11 @@ const screenController = () => {
 
   toggleNavBtn.addEventListener("click", () => {
     const NavBtnState = toggleNavBtn.getAttribute("aria-expanded") === "true";
-    NavBtnState ? navClose() : navOpen();
+    if (NavBtnState) {
+      navClose();
+    } else {
+      navOpen();
+    }
   });
 
   mainNav.addEventListener("click", (e) => {
@@ -201,18 +208,21 @@ const screenController = () => {
     if (e.target.matches(".delete-btn")) {
       const taskContainer = e.target.closest(".task");
       taskContainer.dataset.state = "removing";
-      taskContainer.addEventListener("transitionend", (e) => {
-        if (e.propertyName === "transform") {
+      taskContainer.addEventListener(
+        "transitionend",
+        () => {
           removeTask(e);
-        }
-      });
+        },
+        { once: true }
+      );
     }
   });
   tasksContainer.addEventListener("click", (e) => {
     if (e.target.matches(".cancel-btn")) {
-      refreshTasks();
+      renderEditedTask();
     }
   });
+
   tasksContainer.addEventListener("click", (e) => {
     if (e.target.type === "checkbox") {
       const taskElement = getTasksElement(e);
@@ -248,6 +258,14 @@ const screenController = () => {
   });
 
   // Helper functions
+
+  function renderEditedTask() {
+    // saves changes or restores tasks if changes cancelled
+    const currentEditForm = document.querySelector(".edit-form");
+    const taskContainer = generateTaskComponent(currentTask);
+    taskContainer.dataset.state = "added"; // disable entrance animation
+    currentEditForm.replaceWith(taskContainer);
+  }
 
   function getTasksElement(e) {
     const taskContainer = e.target.closest(".task");
