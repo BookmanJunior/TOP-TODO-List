@@ -4,41 +4,33 @@ export default function ToDo(
   title,
   dueDate,
   priority,
-  status = "unchecked",
+  status = "uncompleted",
   id = generateId()
 ) {
-  const changeTitle = (value) => {
-    title = value;
-  };
-
-  const changeDueDate = (value) => {
-    dueDate = value;
-  };
-
-  const changePriority = (value) => {
-    priority = value;
-  };
-
-  const changeStatus = (value) => {
-    status = value;
-  };
-
   return {
-    changeTitle,
-    changeDueDate,
-    changePriority,
-    changeStatus,
     get title() {
       return title;
+    },
+    set title(value) {
+      title = value;
     },
     get dueDate() {
       return dueDate;
     },
+    set dueDate(value) {
+      dueDate = value;
+    },
     get priority() {
       return priority;
     },
+    set priority(value) {
+      priority = value;
+    },
     get status() {
       return status;
+    },
+    set status(value) {
+      status = value;
     },
     get id() {
       return id;
