@@ -366,6 +366,15 @@ button
 
   .task {
 
+    &[data-status="completed"] {
+
+      filter: brightness(85%);
+      
+      .task-title {
+        text-decoration: line-through;
+      }
+    }
+
     &[data-state="entrance"] {
       opacity: 0;
       animation: slideDown 300ms ease-out forwards;
