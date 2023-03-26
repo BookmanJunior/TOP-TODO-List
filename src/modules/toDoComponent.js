@@ -16,6 +16,7 @@ function toDoComponent(title, dueDate, priority, status, id) {
 
   task.classList.add("task");
   task.dataset.id = id;
+  task.dataset.status = status;
   task.dataset.state = "entrance";
 
   const leftWrapper = leftSideWrapper(title, priority, status);
@@ -88,13 +89,13 @@ function deleteBtnElement() {
   return deleteBtn;
 }
 
-function checkboxElement(priority, status = "unchecked") {
+function checkboxElement(priority, status = "uncompleted") {
   const checkBox = document.createElement("input");
   checkBox.type = "checkbox";
   checkBox.classList.add("task-checkbox", `${priority}-priority`);
   checkBox.setAttribute("title", priority);
 
-  if (status === "checked") {
+  if (status === "completed") {
     checkBox.checked = true;
   }
 
