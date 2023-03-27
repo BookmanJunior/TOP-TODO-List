@@ -134,15 +134,20 @@ const screenController = () => {
     const parentContainer = e.target.closest(".project");
     const projectsTitle =
       parentContainer.firstChild.getAttribute("data-project");
+    const project = Projects.getProject(projectsTitle);
 
-    Projects.removeProject(projectsTitle);
-    updateLocalData();
+    Projects.removeProject(project.title);
     parentContainer.remove();
+    updateLocalData();
 
     // switch to default Inbox folder if active project was deleted
     if (parentContainer.classList.contains("active")) {
       currentProject = Projects.getProject("Inbox");
       switchLink(currentProject.title);
+    }
+
+    if (project.tasks.length) {
+      refreshTasks();
     }
   };
 
@@ -184,7 +189,6 @@ const screenController = () => {
   mainNav.addEventListener("click", (e) => {
     if (e.target.matches(".delete-btn")) {
       removeProject(e);
-      refreshTasks();
     }
   });
 
