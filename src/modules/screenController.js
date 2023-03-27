@@ -157,121 +157,120 @@ const screenController = () => {
     renderAllTasks();
     renderUserProjects();
     noTasksAvailableSign();
-  };
 
-  // Event Listeners
-  window.addEventListener("load", init);
+    // Event Listeners
 
-  tasksContainer.addEventListener("animationend", () => {
-    const tasks = [...document.querySelectorAll(".task")];
-    tasks.forEach((task) => {
-      task.dataset.state = "added";
+    tasksContainer.addEventListener("animationend", () => {
+      const tasks = [...document.querySelectorAll(".task")];
+      tasks.forEach((task) => {
+        task.dataset.state = "added";
+      });
     });
-  });
 
-  mainNav.addEventListener("click", (e) => {
-    if (e.target.matches(".project-title")) {
-      switchProject(e);
-    }
-  });
+    mainNav.addEventListener("click", (e) => {
+      if (e.target.matches(".project-title")) {
+        switchProject(e);
+      }
+    });
 
-  mainNav.addEventListener("click", toggleNav);
+    mainNav.addEventListener("click", toggleNav);
 
-  toggleNavBtn.addEventListener("click", () => {
-    const NavBtnState = toggleNavBtn.getAttribute("aria-expanded") === "true";
-    if (NavBtnState) {
-      navClose();
-    } else {
-      navOpen();
-    }
-  });
+    toggleNavBtn.addEventListener("click", () => {
+      const NavBtnState = toggleNavBtn.getAttribute("aria-expanded") === "true";
+      if (NavBtnState) {
+        navClose();
+      } else {
+        navOpen();
+      }
+    });
 
-  mainNav.addEventListener("click", (e) => {
-    if (e.target.matches(".delete-btn")) {
-      removeProject(e);
-    }
-  });
+    mainNav.addEventListener("click", (e) => {
+      if (e.target.matches(".delete-btn")) {
+        removeProject(e);
+      }
+    });
 
-  inboxProject.addEventListener("click", switchProject);
+    inboxProject.addEventListener("click", switchProject);
 
-  defaultFolders.forEach((folder) => {
-    folder.addEventListener("click", switchFolder);
-  });
-  taskForm.addEventListener("submit", (e) => {
-    const noTasksSign = elementExists(".no-tasks-sign");
+    defaultFolders.forEach((folder) => {
+      folder.addEventListener("click", switchFolder);
+    });
+    taskForm.addEventListener("submit", (e) => {
+      const noTasksSign = elementExists(".no-tasks-sign");
 
-    if (noTasksSign) {
-      noTasksSign.remove();
-    }
-    generateNewTask(e);
-  });
+      if (noTasksSign) {
+        noTasksSign.remove();
+      }
+      generateNewTask(e);
+    });
 
-  tasksContainer.addEventListener("submit", saveEditedTask);
+    tasksContainer.addEventListener("submit", saveEditedTask);
 
-  tasksContainer.addEventListener("click", (e) => {
-    if (e.target.matches(".edit-btn")) {
-      // check for existing task edit form
-      if (elementExists(".edit-form")) {
+    tasksContainer.addEventListener("click", (e) => {
+      if (e.target.matches(".edit-btn")) {
+        // check for existing task edit form
+        if (elementExists(".edit-form")) {
+          renderEditedTask();
+        }
+        editTask(e);
+      }
+    });
+
+    tasksContainer.addEventListener("click", (e) => {
+      if (e.target.matches(".delete-btn")) {
+        const taskContainer = e.target.closest(".task");
+        taskContainer.dataset.state = "removing";
+        taskContainer.addEventListener(
+          "transitionend",
+          () => {
+            removeTask(e);
+            noTasksAvailableSign();
+          },
+          { once: true }
+        );
+      }
+    });
+
+    tasksContainer.addEventListener("click", (e) => {
+      if (e.target.matches(".cancel-btn")) {
         renderEditedTask();
       }
-      editTask(e);
-    }
-  });
+    });
 
-  tasksContainer.addEventListener("click", (e) => {
-    if (e.target.matches(".delete-btn")) {
-      const taskContainer = e.target.closest(".task");
-      taskContainer.dataset.state = "removing";
-      taskContainer.addEventListener(
-        "transitionend",
-        () => {
-          removeTask(e);
-          noTasksAvailableSign();
-        },
-        { once: true }
-      );
-    }
-  });
+    tasksContainer.addEventListener("click", (e) => {
+      if (e.target.type === "checkbox") {
+        const taskElement = getTasksElement(e);
 
-  tasksContainer.addEventListener("click", (e) => {
-    if (e.target.matches(".cancel-btn")) {
-      renderEditedTask();
-    }
-  });
-
-  tasksContainer.addEventListener("click", (e) => {
-    if (e.target.type === "checkbox") {
-      const taskElement = getTasksElement(e);
-
-      if (e.target.checked) {
-        changeTasksStatus(taskElement, "completed");
-      } else {
-        changeTasksStatus(taskElement, "uncompleted");
-        if (currentProject === "Completed") {
-          taskElement.taskContainer.remove();
+        if (e.target.checked) {
+          changeTasksStatus(taskElement, "completed");
+        } else {
+          changeTasksStatus(taskElement, "uncompleted");
+          if (currentProject === "Completed") {
+            taskElement.taskContainer.remove();
+          }
         }
+        updateLocalData();
       }
-      updateLocalData();
-    }
-  });
-  projectAddBtn.addEventListener("click", projectFormOpen);
-  projectForm.addEventListener("submit", addProject);
-  cancelProjectFormBtn.addEventListener("click", () => {
-    projectForm.reset();
-    toggleProjectForm();
-  });
-  projectsContainer.addEventListener("submit", saveEditedProject);
-  projectsContainer.addEventListener("click", (e) => {
-    if (e.target.matches(".cancel-project-change")) {
-      removeExistingProjectForms();
-    }
-  });
-  projectsContainer.addEventListener("click", (e) => {
-    if (e.target.matches(".edit-btn")) {
-      removeExistingProjectForms();
-      editUserProject(e);
-    }
-  });
+    });
+    projectAddBtn.addEventListener("click", projectFormOpen);
+    projectForm.addEventListener("submit", addProject);
+    cancelProjectFormBtn.addEventListener("click", () => {
+      projectForm.reset();
+      toggleProjectForm();
+    });
+    projectsContainer.addEventListener("submit", saveEditedProject);
+    projectsContainer.addEventListener("click", (e) => {
+      if (e.target.matches(".cancel-project-change")) {
+        removeExistingProjectForms();
+      }
+    });
+    projectsContainer.addEventListener("click", (e) => {
+      if (e.target.matches(".edit-btn")) {
+        removeExistingProjectForms();
+        editUserProject(e);
+      }
+    });
+  };
 
   // Helper functions
 
@@ -474,6 +473,10 @@ const screenController = () => {
     const el = document.querySelector(elClass);
     return el;
   }
+
+  return {
+    init,
+  };
 };
 
 export default screenController;
