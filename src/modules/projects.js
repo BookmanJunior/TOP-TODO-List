@@ -1,48 +1,18 @@
 import Project from "./project";
 import ToDo from "./toDo";
 
-const inbox = Project("Inbox");
-
-// For testing
-const work = Project("Work");
-const school = Project("School");
-
-const test1 = ToDo("test", new Date("2023-05-16"), "high", "checked");
-const test2 = ToDo("test2", new Date(), "medium");
-const test3 = ToDo("test3", new Date("2023-04-12"), "low");
-
-inbox.addTask(test1);
-work.addTask(test2);
-school.addTask(test3);
-//
-
+const inbox = Project("Inbox"); // default project
+const localDataSupport = ToDo(
+  "Add local storage support",
+  new Date("2023-03-25"),
+  "high",
+  "completed"
+);
+const statsTask = ToDo("Add stats update", new Date(), "high");
+inbox.addTask(statsTask);
+inbox.addTask(localDataSupport);
 export default class Projects {
-  static #projectsList = [inbox, work, school];
-
-  static checkLocalData() {
-    const localData = JSON.parse(localStorage.getItem("projects"));
-    if (localData) {
-      // restore project and task functions from local data
-      const restoredProjects = localData.map((project) => {
-        const currentProject = Project(project.title);
-        const currentProjectTasks = project.tasks;
-        currentProjectTasks.forEach((task) => {
-          const currentTask = ToDo(
-            task.title,
-            task.dueDate,
-            task.priority,
-            task.status,
-            task.id
-          );
-          currentProject.addTask(currentTask);
-        });
-        return currentProject;
-      });
-      this.#projectsList = restoredProjects;
-      return;
-    }
-    localStorage.setItem("projects", JSON.stringify(this.#projectsList));
-  }
+  static #projectsList = [inbox];
 
   static addProject(project) {
     const newProject = Project(project);
@@ -64,14 +34,14 @@ export default class Projects {
     );
   }
 
-  static updateLocalDataProjects() {
-    localStorage.setItem("projects", JSON.stringify(this.#projectsList));
-  }
-
   static checkForDuplicateProjects(newProjectTitle) {
     return this.#projectsList.some(
       (project) => project.title.toLowerCase() === newProjectTitle.toLowerCase()
     );
+  }
+
+  static set projectsList(list) {
+    this.#projectsList = list;
   }
 
   static get list() {
