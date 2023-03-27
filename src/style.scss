@@ -331,7 +331,6 @@ button
 .tasks-container {
   @include flex(1.5em, $vertical: true);
   padding-block: 2rem;
-  text-align: center;
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -358,6 +357,8 @@ button
     background-color: $clr-primary;
     padding: 0.8em;
     border-radius: 1em;
+    text-align: center;
+
 
     &:hover,
     &:focus-within {
