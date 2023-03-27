@@ -111,6 +111,12 @@ button
   color: $primary-font-clr;
  }
 
+ input[type="text"] {
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+ }
+
  
  header {
   display: flex;
@@ -140,11 +146,6 @@ button
     color: $clr-accent;
   }
 
- }
-
- .edit-project-title,
- .project-input {
-  width: 100%;
  }
 
  .edit-btn,
@@ -304,6 +305,7 @@ button
 .tasks-container {
   @include flex(1.5em, $vertical: true);
   padding-block: 2rem;
+  text-align: center;
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -323,11 +325,10 @@ button
   .task-form,
   .task,
   .edit-form {
-    @include flex(1em);
-    flex-wrap: wrap;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 5px;
     align-self: center;
-    justify-content: space-between;
     background-color: $clr-primary;
     padding: 0.8em;
     border-radius: 1em;
@@ -341,6 +342,10 @@ button
     .right-wrapper {
       @include flex(10px);
       align-items: center;
+    }
+
+    .right-wrapper {
+      justify-self: end;
     }
 
     .priority-btns {
