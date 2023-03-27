@@ -30,12 +30,6 @@ $priority-colors: (
   }
 }
 
-@mixin hamburger-transition($translateValue, $rotateValue) {
-  transform: translateY($translateValue);
-  rotate: $rotateValue;
-  // transition: transform 200ms ease-out, rotate 200ms ease-out 200ms;
-}
-
 // modern css reset
 /*
   1. Use a more-intuitive box-sizing model.
