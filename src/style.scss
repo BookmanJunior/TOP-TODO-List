@@ -203,7 +203,7 @@ button
  // Nav section
 
  aside {
-  height: calc(100vh - 60px);
+  height: 100vh;
   width: 100vw;
   background-color: rgba(133, 131, 131, 0.3);
   position: fixed;
@@ -277,7 +277,6 @@ button
     background-color: transparent;
     visibility: visible;
     width: auto;
-    height: 100vh;
     top: 0;
 
     .nav-wrapper {
