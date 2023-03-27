@@ -10,7 +10,7 @@ export default class taskController {
   }
 
   static getCompletedTasks() {
-    return this.getAllTasks().filter((task) => task.status === "checked");
+    return this.getAllTasks().filter((task) => task.status === "completed");
   }
 
   static getTodaysTasks() {
