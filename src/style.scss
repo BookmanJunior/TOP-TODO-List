@@ -30,6 +30,12 @@ $priority-colors: (
   }
 }
 
+@mixin hamburger-transition($translateValue, $rotateValue) {
+  transform: translateY($translateValue);
+  rotate: $rotateValue;
+  // transition: transform 200ms ease-out, rotate 200ms ease-out 200ms;
+}
+
 // modern css reset
 /*
   1. Use a more-intuitive box-sizing model.
@@ -136,6 +142,33 @@ button
 
       &:hover {
         filter: brightness(90%);
+      }
+    }
+
+    .line {
+      transform-origin: center;
+      transition: y 200ms ease-out 200ms, transform 200ms ease-out, opacity 150ms 200ms;
+    }
+
+    &[aria-expanded="true"] {
+
+      .line {
+        transition: y 200ms ease-out, transform 200ms ease-out 200ms, opacity 150ms ease-out;
+      }
+
+      .line-top {
+        transform: rotate(-45deg);
+        y: 45px;
+
+      }
+
+      .line-middle {
+        opacity: 0;
+      }
+
+      .line-bottom {
+        transform: rotate(45deg);
+        y: 45px;
       }
     }
   }
