@@ -4,6 +4,7 @@ import ToDo from "./toDo";
 import generateTaskComponent from "./toDoComponent";
 import generateToDoFromComponent from "./toDoFormComponent";
 import { projectComponent, editProjectComponent } from "./projectComponent";
+import { loadLocalData, updateLocalData } from "./localStorage";
 
 const screenController = () => {
   const mainNav = document.getElementById("mainNav");
@@ -44,7 +45,7 @@ const screenController = () => {
       { once: true }
     );
     currentProject.addTask(newTask);
-    Projects.updateLocalDataProjects();
+    updateLocalData();
     taskForm.reset();
   };
 
@@ -69,14 +70,14 @@ const screenController = () => {
       currentTask.dueDate = taskEditForm.dueDate.valueAsDate;
     }
     renderEditedTask();
-    Projects.updateLocalDataProjects();
+    updateLocalData();
   };
 
   const removeTask = (e) => {
     const taskElement = getTasksElement(e);
     taskElement.taskContainer.remove();
     taskElement.tasksProject.removeTask(taskElement.tasksId);
-    Projects.updateLocalDataProjects();
+    updateLocalData();
   };
 
   const renderProject = (project) => {
@@ -92,7 +93,7 @@ const screenController = () => {
     }
 
     Projects.addProject(newProjectTitle);
-    Projects.updateLocalDataProjects();
+    updateLocalData();
     renderProject(newProjectTitle);
     switchLink(newProjectTitle);
     projectForm.reset();
@@ -125,7 +126,7 @@ const screenController = () => {
 
     currentProject.title = projectEditFormValue;
     refreshUserProjects();
-    Projects.updateLocalDataProjects();
+    updateLocalData();
     switchLink(currentProject.title);
   };
 
@@ -135,7 +136,7 @@ const screenController = () => {
       parentContainer.firstChild.getAttribute("data-project");
 
     Projects.removeProject(projectsTitle);
-    Projects.updateLocalDataProjects();
+    updateLocalData();
     parentContainer.remove();
 
     // switch to default Inbox folder if active project was deleted
@@ -146,9 +147,8 @@ const screenController = () => {
   };
 
   const init = () => {
-    Projects.checkLocalData();
-    // default project on load
-    currentProject = Projects.getProject("Inbox");
+    loadLocalData(); // loads data from local storage if available.
+    currentProject = Projects.getProject("Inbox"); // default project on load
     renderAllTasks();
     renderUserProjects();
     noTasksAvailableSign();
@@ -247,7 +247,7 @@ const screenController = () => {
           taskElement.taskContainer.remove();
         }
       }
-      Projects.updateLocalDataProjects();
+      updateLocalData();
     }
   });
   projectAddBtn.addEventListener("click", projectFormOpen);
