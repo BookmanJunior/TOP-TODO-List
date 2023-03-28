@@ -70,6 +70,7 @@ const screenController = () => {
       currentTask.dueDate = taskEditForm.dueDate.valueAsDate;
     }
     renderEditedTask();
+    noTasksAvailableSign();
     updateLocalData();
   };
 
@@ -279,6 +280,31 @@ const screenController = () => {
     const currentEditForm = document.querySelector(".edit-form");
     const taskContainer = generateTaskComponent(currentTask);
     taskContainer.dataset.state = "added"; // disable entrance animation
+    const isTodaysTask = taskController
+      .getTodaysTasks()
+      .some(({ id }) => id === taskContainer.dataset.id);
+    const isThisWeeksTask = taskController
+      .getThisWeeksTasks()
+      .some(({ id }) => id === taskContainer.dataset.id);
+
+    // Remove task if it doesn't match folder's requirements
+    if (currentProject === "Today") {
+      if (isTodaysTask) {
+        currentEditForm.replaceWith(taskContainer);
+        return;
+      }
+      currentEditForm.remove();
+      return;
+    }
+
+    if (currentProject === "This Week") {
+      if (isThisWeeksTask) {
+        currentEditForm.replaceWith(taskContainer);
+        return;
+      }
+      currentEditForm.remove();
+      return;
+    }
     currentEditForm.replaceWith(taskContainer);
   }
 
