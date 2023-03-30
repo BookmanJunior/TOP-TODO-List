@@ -13,6 +13,7 @@ function toDoFormComponent() {
   const taskForm = document.createElement("form");
 
   taskForm.classList.add("edit-form");
+  taskForm.setAttribute("aria-label", "edit task form");
 
   taskForm.append(leftSideWrapper(), rightSideWrapper());
 
@@ -44,8 +45,12 @@ function rightSideWrapper() {
 
   wrapper.classList.add("right-wrapper");
 
-  const addBtn = btnFactory("save-btn", addIcon());
-  const cancelBtn = btnFactory("cancel-btn", cancelIcon());
+  const addBtn = btnFactory("save-btn", addIcon(), "save task changes");
+  const cancelBtn = btnFactory(
+    "cancel-btn",
+    cancelIcon(),
+    "cancel task changes"
+  );
   cancelBtn.btn.type = "button";
 
   wrapper.append(datePicker(), addBtn.btn, cancelBtn.btn);
@@ -58,6 +63,7 @@ function priorityBtn(priority) {
   radioBtn.type = "radio";
   radioBtn.name = "priority";
   radioBtn.value = priority;
+  radioBtn.setAttribute("aria-label", `${priority} priority`);
   radioBtn.classList.add(`${priority}-priority`);
   radioBtn.required = "true";
 
@@ -80,14 +86,16 @@ function datePicker() {
   date.type = "date";
   date.name = "due-date";
   date.id = "dueDate";
+  date.setAttribute("aria-label", "date picker");
 
   return date;
 }
 
-function btnFactory(className, icon) {
+function btnFactory(className, icon, label) {
   const btn = document.createElement("button");
   btn.appendChild(icon);
   btn.classList.add(className);
+  btn.setAttribute("aria-label", label);
 
   return { btn };
 }
