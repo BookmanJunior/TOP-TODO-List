@@ -26,7 +26,7 @@ ToDo List app created using JavaScript and Sass. Users can add, delete, edit tas
 - Local Storage Support
 - Sass
 - Separation of logic
-- Working with external libraries
+- Work with external libraries
 
 ## Design inspiration
 [Behance Link](https://www.behance.net/gallery/157754015/To-Do-List-UI-Design)
