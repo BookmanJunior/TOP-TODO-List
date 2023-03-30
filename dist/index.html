@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Responsive ToDo List app" />
     <title>ToDo</title>
     <link rel="stylesheet" href="style.css" />
     <script src="main.js" defer></script>
@@ -15,6 +16,7 @@
           class="toggle-nav-btn"
           aria-expanded="false"
           aria-controls="mainNav"
+          aria-label="hamburger-menu"
         >
           <svg
             viewBox="0 0 100 100"
@@ -74,10 +76,19 @@
             <div class="projects-container">
               <h2>Projects</h2>
               <ul class="projects" id="projects"></ul>
-              <button class="add-project-btn" id="addProjectBtn">
+              <button
+                class="add-project-btn"
+                id="addProjectBtn"
+                aria-label="add project button"
+              >
                 + Add Project
               </button>
-              <form class="project-form" id="projectForm" data-state="hidden">
+              <form
+                class="project-form"
+                id="projectForm"
+                data-state="hidden"
+                aria-label="project form"
+              >
                 <input
                   type="text"
                   id="projectInput"
@@ -104,7 +115,7 @@
         </aside>
         <section class="tasks-container" id="tasksContainer">
           <h1 class="page-title">Inbox</h1>
-          <form class="task-form" data-state="displayed">
+          <form class="task-form" data-state="displayed" aria-label="task form">
             <div class="left-wrapper">
               <div class="priority-btns">
                 <input
@@ -112,6 +123,7 @@
                   name="priority"
                   value="high"
                   class="high-priority"
+                  aria-label="high priority"
                   required
                 />
                 <input
@@ -119,12 +131,14 @@
                   name="priority"
                   value="medium"
                   class="medium-priority"
+                  aria-label="medium priority"
                 />
                 <input
                   type="radio"
                   name="priority"
                   value="low"
                   class="low-priority"
+                  aria-label="low priority"
                 />
               </div>
               <input
@@ -133,10 +147,16 @@
                 id="taskTitle"
                 placeholder="What is your next task?"
                 required
+                aria-label="task title"
               />
             </div>
             <div class="right-wrapper">
-              <input type="date" name="dueDate" id="dueDate" />
+              <input
+                type="date"
+                name="dueDate"
+                id="dueDate"
+                aria-label="date picker"
+              />
               <button class="addTask-btn" title="Add Task">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
