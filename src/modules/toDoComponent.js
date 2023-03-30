@@ -73,6 +73,7 @@ function editBtnElement() {
   const editBtn = document.createElement("button");
 
   editBtn.classList.add("edit-btn");
+  editBtn.setAttribute("aria-label", "edit task button");
 
   editBtn.appendChild(editIcon());
 
@@ -82,9 +83,10 @@ function editBtnElement() {
 function deleteBtnElement() {
   const deleteBtn = document.createElement("button");
 
-  deleteBtn.appendChild(deleteIcon());
-
   deleteBtn.classList.add("delete-btn");
+  deleteBtn.setAttribute("aria-label", "delete task button");
+
+  deleteBtn.appendChild(deleteIcon());
 
   return deleteBtn;
 }
