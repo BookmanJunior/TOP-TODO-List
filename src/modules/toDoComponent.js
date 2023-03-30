@@ -49,8 +49,9 @@ function rightSideWrapper(dueDate) {
 
 function taskTitleElement(title) {
   const taskTitle = document.createElement("span");
-  taskTitle.classList.add("task-title");
 
+  taskTitle.classList.add("task-title");
+  taskTitle.setAttribute("aria-label", "task title");
   taskTitle.textContent = title;
 
   return taskTitle;
@@ -60,6 +61,7 @@ function dueDateElement(dueDate = "") {
   const dateComponent = document.createElement("span");
 
   dateComponent.classList.add("due-date");
+  dateComponent.setAttribute("aria-label", "date");
 
   // convert to readable date
   dateComponent.textContent = dueDate
