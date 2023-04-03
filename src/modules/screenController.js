@@ -16,6 +16,7 @@ const screenController = () => {
   const pageTitle = document.querySelector(".page-title");
   const taskForm = document.querySelector(".task-form");
   const projectForm = document.getElementById("projectForm");
+  const projectInput = projectForm.querySelector(".project-input");
   const projectAddBtn = document.getElementById("addProjectBtn");
   const cancelProjectFormBtn = document.querySelector(".cancel-project-btn");
   let currentProject;
@@ -89,10 +90,6 @@ const screenController = () => {
     e.preventDefault();
     const newProjectTitle = projectForm.projectInput.value;
 
-    if (Projects.checkForDuplicateProjects(newProjectTitle)) {
-      return;
-    }
-
     Projects.addProject(newProjectTitle);
     updateLocalData();
     renderProject(newProjectTitle);
@@ -120,10 +117,6 @@ const screenController = () => {
     e.preventDefault();
     const projectEditForm = document.querySelector(".edit-project-form");
     const projectEditFormValue = projectEditForm.newProjectTitle.value;
-
-    if (Projects.checkForDuplicateProjects(projectEditFormValue)) {
-      return;
-    }
 
     currentProject.title = projectEditFormValue;
     refreshUserProjects();
@@ -158,6 +151,8 @@ const screenController = () => {
     renderAllTasks();
     renderUserProjects();
     noTasksAvailableSign();
+    projectForm.reset();
+    taskForm.reset();
 
     // Event Listeners
 
@@ -255,11 +250,26 @@ const screenController = () => {
     });
     projectAddBtn.addEventListener("click", projectFormOpen);
     projectForm.addEventListener("submit", addProject);
+    projectInput.addEventListener("input", () => {
+      showError(projectInput);
+    });
     cancelProjectFormBtn.addEventListener("click", () => {
       projectForm.reset();
       toggleProjectForm();
     });
     projectsContainer.addEventListener("submit", saveEditedProject);
+    projectsContainer.addEventListener("input", () => {
+      // custom validation on dynamic project form
+      const projectEditFormExists = document.querySelector(
+        ".edit-project-title"
+      );
+      if (!projectEditFormExists) {
+        return;
+      }
+      projectEditFormExists.addEventListener("input", () => {
+        showError(projectEditFormExists);
+      });
+    });
     projectsContainer.addEventListener("click", (e) => {
       if (e.target.matches(".cancel-project-change")) {
         removeExistingProjectForms();
@@ -498,6 +508,16 @@ const screenController = () => {
   function elementExists(elClass) {
     const el = document.querySelector(elClass);
     return el;
+  }
+
+  function showError(el) {
+    const projectValue = el.value;
+
+    if (Projects.checkForDuplicateProjects(projectValue)) {
+      el.setCustomValidity(`${projectValue} Project Exists`);
+    } else {
+      el.setCustomValidity("");
+    }
   }
 
   return {
