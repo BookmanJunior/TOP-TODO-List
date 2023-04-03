@@ -10,6 +10,7 @@ $priority-colors: (
   medium-priority: #fac608,
   low-priority: #3fd4f4,
 );
+$error: #dba3ad;
 
 @mixin reset-default-appearance {
   appearance: none;
@@ -20,7 +21,7 @@ $priority-colors: (
 
 @mixin flex($gapValue: false, $vertical: false) {
   display: flex;
-  
+
   @if $gapValue {
     gap: $gapValue;
   }
@@ -34,7 +35,9 @@ $priority-colors: (
 /*
   1. Use a more-intuitive box-sizing model.
 */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 /*
@@ -47,7 +50,8 @@ $priority-colors: (
 /*
   3. Allow percentage-based heights in the application
 */
-html, body {
+html,
+body {
   height: 100%;
 }
 /*
@@ -62,27 +66,41 @@ body {
 /*
   6. Improve media defaults
 */
-img, picture, video, canvas, svg {
+img,
+picture,
+video,
+canvas,
+svg {
   display: block;
   max-width: 100%;
 }
 /*
   7. Remove built-in form typography styles
 */
-input, button, textarea, select {
+input,
+button,
+textarea,
+select {
   font: inherit;
 }
 /*
   8. Avoid text overflows
 */
-p, h1, h2, h3, h4, h5, h6 {
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   overflow-wrap: break-word;
 }
 
 /*
   9. Create a root stacking context
 */
-#root, #__next {
+#root,
+#__next {
   isolation: isolate;
 }
 
@@ -105,29 +123,27 @@ button {
 }
 
 input,
-button
- {
+button {
   @include reset-default-appearance();
   color: $primary-font-clr;
- }
+}
 
- input[type="text"] {
+input[type="text"] {
   width: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
- }
+}
 
- 
- header {
+header {
   display: flex;
   height: 60px;
   background-color: $clr-primary;
   align-items: center;
   gap: 1em;
   padding-inline: 1em;
-  
+
   position: sticky;
-  top:0;
+  top: 0;
   z-index: 100;
 
   .toggle-nav-btn {
@@ -141,19 +157,19 @@ button
 
     .line {
       transform-origin: center;
-      transition: y 200ms ease-out 200ms, transform 200ms ease-out, opacity 150ms 200ms;
+      transition: y 200ms ease-out 200ms, transform 200ms ease-out,
+        opacity 150ms 200ms;
     }
 
     &[aria-expanded="true"] {
-
       .line {
-        transition: y 200ms ease-out, transform 200ms ease-out 200ms, opacity 150ms ease-out;
+        transition: y 200ms ease-out, transform 200ms ease-out 200ms,
+          opacity 150ms ease-out;
       }
 
       .line-top {
         transform: rotate(-45deg);
         y: 45px;
-
       }
 
       .line-middle {
@@ -172,15 +188,13 @@ button
     font-weight: 600;
     color: $clr-accent;
   }
+}
 
- }
-
- .edit-btn,
- .delete-btn,
- .save-btn,
- .cancel-btn,
- .addTask-btn {
-
+.edit-btn,
+.delete-btn,
+.save-btn,
+.cancel-btn,
+.addTask-btn {
   svg {
     pointer-events: none;
 
@@ -194,15 +208,15 @@ button
   }
 
   &:hover {
-    path{
+    path {
       fill: $clr-accent;
     }
   }
- }
+}
 
- // Nav section
+// Nav section
 
- aside {
+aside {
   height: 100vh;
   width: 100vw;
   background-color: rgba(133, 131, 131, 0.3);
@@ -212,10 +226,10 @@ button
   display: block;
   visibility: hidden;
 
-  .nav-wrapper { 
+  .nav-wrapper {
     @include flex(2em, $vertical: true);
     background-color: $clr-primary;
-    box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, .3);
+    box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, 0.3);
     padding: 2.5em 1em;
     height: 100vh;
     width: 300px;
@@ -223,7 +237,6 @@ button
     transform: translateX(-100%);
     pointer-events: none;
     transition: all 150ms ease-out;
-
   }
 
   &[data-state="displayed"] {
@@ -243,7 +256,7 @@ button
     li {
       display: flex;
       justify-content: space-between;
-  
+
       &.active {
         color: $clr-accent;
       }
@@ -251,18 +264,16 @@ button
       span:first-child {
         font-weight: 600;
         cursor: pointer;
-  
+
         &:hover {
-          color: $clr-accent
+          color: $clr-accent;
         }
       }
-  
     }
   }
 }
 
 @media screen and (min-width: 970px) {
-
   header {
     display: none;
   }
@@ -321,9 +332,16 @@ button
 
 .edit-project-title,
 .project-input {
-  border: 1px solid $clr-accent;
   border-radius: 4px;
   padding: 5px;
+
+  &:valid {
+    border: 1px solid $clr-accent;
+  }
+
+  &:invalid {
+    border: 1px solid $error;
+  }
 }
 
 // Tasks section
@@ -359,10 +377,9 @@ button
     border-radius: 1em;
     text-align: center;
 
-
     &:hover,
     &:focus-within {
-    box-shadow: 0 5px 5px rgba(0, 0, 0, .3);
+      box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
     }
 
     .left-wrapper,
@@ -376,12 +393,11 @@ button
     }
 
     .priority-btns {
-      @include flex(5px)
+      @include flex(5px);
     }
   }
-  
-  .task-form
-  {
+
+  .task-form {
     width: min(1000px, 95%);
     margin-block: 1em;
 
@@ -397,11 +413,9 @@ button
   }
 
   .task {
-
     &[data-status="completed"] {
-
       filter: brightness(85%);
-      
+
       .task-title {
         text-decoration: line-through;
       }
@@ -451,7 +465,7 @@ button
 }
 
 input:is([type="radio"], [type="checkbox"]) {
-  $size: 1.1250em;
+  $size: 1.125em;
 
   height: $size;
   width: $size;
@@ -465,7 +479,6 @@ input:is([type="radio"], [type="checkbox"]) {
     content: "";
     transform: scale(0);
     transition: transform 120ms ease-out;
-
   }
 
   &:checked::after {
@@ -485,7 +498,7 @@ input:is([type="radio"], [type="checkbox"]) {
       }
     }
   }
-  }
+}
 
 input[type="radio"] {
   $circle-size: 1em;
@@ -497,14 +510,13 @@ input[type="radio"] {
   }
 }
 
-
 input[type="checkbox"] {
-  $check-mark-size: 0.75em;  
+  $check-mark-size: 0.75em;
 
   &::after {
-  height: $check-mark-size;
-  width: $check-mark-size;
-  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-  transform-origin: bottom left;
-}
+    height: $check-mark-size;
+    width: $check-mark-size;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    transform-origin: bottom left;
+  }
 }
