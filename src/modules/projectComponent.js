@@ -37,6 +37,8 @@ function editProjectComponent(projectTitle) {
   saveBtn.type = "submit";
   cancelBtn.type = "button";
 
+  textInput.required = true;
+
   container.classList.add("edit-project-form");
   textInput.value = projectTitle;
   saveBtn.value = "Save";
